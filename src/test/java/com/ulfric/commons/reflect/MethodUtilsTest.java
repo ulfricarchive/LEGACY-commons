@@ -7,39 +7,39 @@ import org.junit.jupiter.api.Test;
 import com.google.common.truth.Truth8;
 import com.ulfric.commons.api.UtilTestBase;
 
-public class MethodUtilsTest extends UtilTestBase<MethodUtils> {
+final class MethodUtilsTest extends UtilTestBase<MethodUtils> {
 
 	@Test
 	@DisplayName("MethodUtils.getDeclaredMethod(Class, String) on Object#toString is present")
-	public void testGetDeclaredMethodToStringOnClassObject()
+	void testGetDeclaredMethodToStringOnClassObject()
 	{
 		Truth8.assertThat(MethodUtils.getDeclaredMethod(Object.class, "toString")).isPresent();
 	}
 
 	@Test
 	@DisplayName("MethodUtils.getDeclaredMethod(Class, String) on Object#abcdefg is empty")
-	public void testGetDeclaredMethodAbcdefgOnClassObject()
+	void testGetDeclaredMethodAbcdefgOnClassObject()
 	{
 		Truth8.assertThat(MethodUtils.getDeclaredMethod(Object.class, "abcdefg")).isEmpty();
 	}
 
 	@Test
 	@DisplayName("MethodUtils.getDeclaredMethod(Class, String) on <null>#<empty> throws NullPointerException")
-	public void testGetDeclaredMethodOnNullClass()
+	void testGetDeclaredMethodOnNullClass()
 	{
 		Assertions.expectThrows(NullPointerException.class, () -> MethodUtils.getDeclaredMethod(null, ""));
 	}
 
 	@Test
 	@DisplayName("MethodUtils.getDeclaredMethod(Class, String) on Object#<null> throws NullPointerException")
-	public void testGetDeclaredMethodNullOnClassObject()
+	void testGetDeclaredMethodNullOnClassObject()
 	{
 		Assertions.expectThrows(NullPointerException.class, () -> MethodUtils.getDeclaredMethod(Object.class, null));
 	}
 
 	@Test
 	@DisplayName("MethodUtils.getDeclaredMethod(Class, String) on <null>#<null> throws NullPointerException")
-	public void testGetDeclaredMethodNullOnNullClass()
+	void testGetDeclaredMethodNullOnNullClass()
 	{
 		Assertions.expectThrows(NullPointerException.class, () -> MethodUtils.getDeclaredMethod(null, null));
 	}

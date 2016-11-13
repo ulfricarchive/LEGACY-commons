@@ -15,7 +15,7 @@ public abstract class UtilTestBase<T extends Util> {
 
 	@DisplayName("Instantiation Failure")
 	@Test
-	public final void testInstantiationFails() throws Exception
+	final void testInstantiationFails() throws Exception
 	{
 		Type type = this.getClass().getGenericSuperclass();
 

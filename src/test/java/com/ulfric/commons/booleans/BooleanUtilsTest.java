@@ -11,35 +11,35 @@ final class BooleanUtilsTest extends UtilTestBase<BooleanUtils> {
 
 	@Test
 	@DisplayName("Parse Boolean \"true\" is true")
-	public void testParseBooleanStringtrueToTrue()
+	void testParseBooleanStringtrueToTrue()
 	{
 		Truth.assertThat(BooleanUtils.parseBoolean("true")).isTrue();
 	}
 
 	@Test
 	@DisplayName("Parse Boolean \"TRUE\" is true")
-	public void testParseBooleanStringTRUEToTrue()
+	void testParseBooleanStringTRUEToTrue()
 	{
 		Truth.assertThat(BooleanUtils.parseBoolean("TRUE")).isTrue();
 	}
 
 	@Test
 	@DisplayName("Parse Boolean \"True\" is true")
-	public void testParseBooleanStringTrueToTrue()
+	void testParseBooleanStringTrueToTrue()
 	{
 		Truth.assertThat(BooleanUtils.parseBoolean("True")).isTrue();
 	}
 
 	@Test
 	@DisplayName("Parse Boolean \"false\" is false")
-	public void testParseBooleanStringfalseToFalse()
+	void testParseBooleanStringfalseToFalse()
 	{
 		Truth.assertThat(BooleanUtils.parseBoolean("false")).isFalse();
 	}
 
 	@Test
 	@DisplayName("Parse Boolean \"FALSE\" is false")
-	public void testParseBooleanStringFALSEToFalse()
+	void testParseBooleanStringFALSEToFalse()
 	{
 		Truth.assertThat(BooleanUtils.parseBoolean("FALSE")).isFalse();
 	}

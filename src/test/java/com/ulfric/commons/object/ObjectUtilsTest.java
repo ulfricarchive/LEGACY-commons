@@ -7,25 +7,25 @@ import org.junit.jupiter.api.Test;
 import com.google.common.truth.Truth;
 import com.ulfric.commons.api.UtilTestBase;
 
-public class ObjectUtilsTest extends UtilTestBase<ObjectUtils> {
+final class ObjectUtilsTest extends UtilTestBase<ObjectUtils> {
 
 	@Test
 	@DisplayName("ObjectUtils.generateString(Object) on null throws NullPointerException")
-	public void testGenerateStringOnNullThrowsNullPointerException()
+	void testGenerateStringOnNullThrowsNullPointerException()
 	{
 		Assertions.expectThrows(NullPointerException.class, () -> ObjectUtils.generateString(null));
 	}
 
 	@Test
 	@DisplayName("ObjectUtils.generateString(Object) on new Object() equals \"Object[]\"")
-	public void testGenerateStringOnObject()
+	void testGenerateStringOnObject()
 	{
 		Truth.assertThat(ObjectUtils.generateString(new Object())).isEqualTo("Object[]");
 	}
 
 	@Test
 	@DisplayName("ObjectUtils.generateString(Object) on populated object works as expected")
-	public void testGenerateStringWorksAsExpected()
+	void testGenerateStringWorksAsExpected()
 	{
 		Truth.assertThat(new A().toString()).isEqualTo("A[b=B[ten=10, hello=Hello!, nothing=<null>], c=C[dis=<recursive>]]");
 	}
