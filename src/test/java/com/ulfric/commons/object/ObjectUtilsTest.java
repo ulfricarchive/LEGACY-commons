@@ -32,6 +32,8 @@ final class ObjectUtilsTest extends UtilTestBase<ObjectUtils> {
 
 	private class Gen
 	{
+		Gen() { }
+
 		@Override
 		public final String toString()
 		{
@@ -42,6 +44,8 @@ final class ObjectUtilsTest extends UtilTestBase<ObjectUtils> {
 	@SuppressWarnings("unused")
 	private final class A extends Gen
 	{
+		A() { }
+
 		private final B b = new B();
 		private final C c = new C();
 	}
@@ -49,6 +53,8 @@ final class ObjectUtilsTest extends UtilTestBase<ObjectUtils> {
 	@SuppressWarnings("unused")
 	private final class B extends Gen
 	{
+		B() { }
+
 		private final int ten = 10;
 		private final String hello = "Hello!";
 		private final Void nothing = null;
@@ -57,6 +63,8 @@ final class ObjectUtilsTest extends UtilTestBase<ObjectUtils> {
 	@SuppressWarnings("unused")
 	private final class C extends Gen
 	{
+		C() { }
+
 		private final transient int zero = 0;
 		private final transient int one = 1;
 		private final transient int two = 2;
