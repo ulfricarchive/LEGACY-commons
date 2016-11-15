@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.truth.Truth;
 import com.ulfric.commons.api.UtilTestBase;
 
+@DisplayName("ObjectUtils")
 final class ObjectUtilsTest extends UtilTestBase<ObjectUtils> {
 
 	@Test

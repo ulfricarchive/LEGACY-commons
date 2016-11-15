@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.truth.Truth;
 import com.ulfric.commons.api.UtilTestBase;
 
+@DisplayName("BooleanUtils")
 final class BooleanUtilsTest extends UtilTestBase<BooleanUtils> {
 
 	@Test
