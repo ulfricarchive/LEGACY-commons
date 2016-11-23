@@ -36,6 +36,11 @@ final class ToString extends ObjectHelper {
 	{
 		String element = this.serializeField(field);
 
+		this.addElementToString(element);
+	}
+
+	private void addElementToString(String element)
+	{
 		if (element == null)
 		{
 			return;
