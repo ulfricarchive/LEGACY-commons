@@ -2,16 +2,14 @@ package com.ulfric.commons.object;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 
-import com.ulfric.commons.reflect.FieldUtils;
 import com.ulfric.commons.reflect.MemberUtils;
 import com.ulfric.commons.reflect.MethodUtils;
 
-final class ToString {
+final class ToString extends ObjectHelper {
 
 	public static String toString(Object object)
 	{
@@ -22,25 +20,10 @@ final class ToString {
 
 	private ToString(Object object)
 	{
-		this.object = object;
-		this.type = object.getClass();
+		super(object);
 	}
 
-	private final Object object;
-	private final Class<?> type;
 	private final StringJoiner joiner = new StringJoiner(", ");
-
-	private List<Field> getFields()
-	{
-		List<Field> fields = FieldUtils.getAllFields(this.type);
-		fields.forEach(this::setupField);
-		return fields;
-	}
-
-	private void setupField(Field field)
-	{
-		field.setAccessible(true);
-	}
 
 	private String buildString()
 	{
@@ -127,11 +110,6 @@ final class ToString {
 		return null;
 	}
 
-	private boolean isOverriden(Method method)
-	{
-		return method.getDeclaringClass() != Object.class;
-	}
-
 	private String preGetObject(Object object)
 	{
 		if (object == null)
@@ -139,7 +117,7 @@ final class ToString {
 			return this.nullLookup();
 		}
 
-		if (object == this.object)
+		if (this.isRecursive(object))
 		{
 			return this.recursiveLookup();
 		}
