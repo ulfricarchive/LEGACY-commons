@@ -50,7 +50,6 @@ public abstract class UtilTestBase<T extends Util> {
 		{
 			caught = exception;
 		}
-		Truth.assertThat(caught).isNotNull();
 		Truth.assertThat(caught).isInstanceOf(UtilInstantiationException.class);
 	}
 
