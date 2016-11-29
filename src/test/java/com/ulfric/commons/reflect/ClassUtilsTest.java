@@ -2,11 +2,15 @@ package com.ulfric.commons.reflect;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import com.google.common.truth.Truth;
 import com.google.common.truth.Truth8;
 import com.ulfric.commons.api.UtilTestBase;
 
+@DisplayName("Class Utils")
+@RunWith(JUnitPlatform.class)
 class ClassUtilsTest extends UtilTestBase<ClassUtils> {
 
 	@Test
@@ -21,13 +25,6 @@ class ClassUtilsTest extends UtilTestBase<ClassUtils> {
 	void testGetClassRandomString()
 	{
 		Truth8.assertThat(ClassUtils.getClass("RandomString123")).isEmpty();
-	}
-
-	@Test
-	@DisplayName("getClass(\"LoadClass\"")
-	void testGetClassLoadClass()
-	{
-		Truth8.assertThat(ClassUtils.getClass("com.ulfric.commons.reflect.LoadClass")).isPresent();
 	}
 
 	@Test
