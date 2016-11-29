@@ -13,17 +13,27 @@ public class BooleanUtils implements Util {
 
 		String parse = value.toLowerCase();
 
-		if (parse.equals("true"))
+		if (BooleanUtils.isTrue(parse))
 		{
 			return true;
 		}
 
-		if (parse.equals("false"))
+		if (BooleanUtils.isFalse(parse))
 		{
 			return false;
 		}
 
 		throw new BooleanFormatException(value);
+	}
+
+	private static boolean isTrue(String value)
+	{
+		return value.equals("true");
+	}
+
+	private static boolean isFalse(String value)
+	{
+		return value.equals("false");
 	}
 
 	private BooleanUtils()
