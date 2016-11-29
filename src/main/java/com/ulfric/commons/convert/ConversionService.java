@@ -1,4 +1,4 @@
-package com.ulfric.commons.reflect;
+package com.ulfric.commons.convert;
 
 public final class ConversionService {
 

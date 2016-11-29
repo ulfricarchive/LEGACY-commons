@@ -1,4 +1,4 @@
-package com.ulfric.commons.reflect;
+package com.ulfric.commons.convert;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +7,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import com.google.common.truth.Truth;
+import com.ulfric.commons.convert.ConversionService;
 
 @RunWith(JUnitPlatform.class)
 class ConversionServiceTest {
