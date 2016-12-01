@@ -30,7 +30,7 @@ class ExceptionFactoryTest {
 	@Test
 	void testThrowNullPointer()
 	{
-		this.expect(() -> this.factory.now(NullPointerException.class));
+		this.expect(() -> this.factory.raise(NullPointerException.class));
 	}
 
 	@Test
@@ -38,7 +38,7 @@ class ExceptionFactoryTest {
 	{
 		try
 		{
-			this.factory.now(NullPointerException.class);
+			this.factory.raise(NullPointerException.class);
 			throw new RuntimeException("This should never happen!");
 		}
 		catch (Ex e)

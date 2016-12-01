@@ -45,13 +45,13 @@ public final class ExceptionFactory<X extends Throwable> extends Base {
 
 	private final transient Constructor<X> constructor;
 
-	public <DUMMY, T extends Throwable> DUMMY now(Class<T> exception)
+	public <DUMMY, T extends Throwable> DUMMY raise(Class<T> exception)
 	{
 		this.sneakyThrow(exception);
 		return null;
 	}
 
-	public <DUMMY, T extends Throwable> DUMMY now(Class<T> exception, String message)
+	public <DUMMY, T extends Throwable> DUMMY raise(Class<T> exception, String message)
 	{
 		this.sneakyThrow(exception, message);
 		return null;
