@@ -45,42 +45,36 @@ public final class ExceptionFactory<X extends Throwable> extends Base {
 
 	private final transient Constructor<X> constructor;
 
-	public <DUMMY, T extends Throwable> DUMMY raise(Class<T> exception)
-	{
-		this.sneakyThrow(exception);
-		return null;
-	}
-
-	public <DUMMY, T extends Throwable> DUMMY raise(Class<T> exception, String message)
-	{
-		this.sneakyThrow(exception, message);
-		return null;
-	}
-
-	private <T extends Throwable> void sneakyThrow(Class<T> exception)
+	public <DUMMY> DUMMY raise(Class<? extends Throwable> exception)
 	{
 		try
 		{
-			this.sneakyThrow(exception.newInstance());
+			return this.raise(exception.newInstance());
 		}
 		catch (InstantiationException | IllegalAccessException e)
 		{
-			throw new IllegalArgumentException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
-	private <T extends Throwable> void sneakyThrow(Class<T> exception, String message)
+	public <DUMMY> DUMMY raise(Class<? extends Throwable> throwable, String message)
 	{
 		try
 		{
-			Constructor<T> constructor = exception.getConstructor(String.class);
-			this.sneakyThrow(constructor.newInstance(message));
+			Constructor<? extends Throwable> constructor = throwable.getConstructor(String.class);
+			Throwable thrw = constructor.newInstance(message);
+			return this.raise(thrw);
 		}
-		catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-				SecurityException | IllegalArgumentException | InvocationTargetException e)
-		{
-			throw new IllegalArgumentException(e);
+		catch (NoSuchMethodException | SecurityException | InstantiationException |
+				IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException(e);
 		}
+	}
+
+	public <DUMMY> DUMMY raise(Throwable throwable)
+	{
+		this.sneakyThrow(throwable);
+		return null;
 	}
 
 	private void sneakyThrow(Throwable throwable)
