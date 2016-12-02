@@ -1,13 +1,12 @@
 package com.ulfric.commons.reflect;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import com.google.common.truth.Truth8;
 import com.ulfric.commons.api.UtilTestBase;
+import com.ulfric.verify.Verify;
 
 @DisplayName("Field Utils")
 @RunWith(JUnitPlatform.class)
@@ -18,25 +17,25 @@ class FieldUtilsTest extends UtilTestBase<FieldUtils> {
 	@Test
 	void testGetDeclaredFieldNullClass()
 	{
-		Assertions.assertThrows(NullPointerException.class, () -> FieldUtils.getDeclaredField(null, ""));
+		Verify.that(() -> FieldUtils.getDeclaredField(null, "")).doesThrow(NullPointerException.class);
 	}
 
 	@Test
 	void testGetDeclaredFieldNullName()
 	{
-		Assertions.assertThrows(NullPointerException.class, () -> FieldUtils.getDeclaredField(Object.class, null));
+		Verify.that(() -> FieldUtils.getDeclaredField(Object.class, null)).doesThrow(NullPointerException.class);
 	}
 
 	@Test
 	void testGetDeclaredFieldBlankClassAndName()
 	{
-		Truth8.assertThat(FieldUtils.getDeclaredField(Object.class, "")).isEmpty();
+		Verify.that(FieldUtils.getDeclaredField(Object.class, "")).isEmpty();
 	}
 
 	@Test
 	void testGetDeclaredField()
 	{
-		Truth8.assertThat(FieldUtils.getDeclaredField(this.getClass(), "testField")).isPresent();
+		Verify.that(FieldUtils.getDeclaredField(this.getClass(), "testField")).isPresent();
 	}
 
 }

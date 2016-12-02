@@ -1,14 +1,12 @@
 package com.ulfric.commons.convert;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import com.google.common.truth.Truth;
-import com.ulfric.commons.convert.ConversionService;
+import com.ulfric.verify.Verify;
 
 @DisplayName("Conversion Service")
 @RunWith(JUnitPlatform.class)
@@ -25,19 +23,19 @@ class ConversionServiceTest {
 	@Test
 	void testNewInstanceNotNull()
 	{
-		Truth.assertThat(this.service).isNotNull();
+		Verify.that(this.service).isNotNull();
 	}
 
 	@Test
 	void testNewInstanceIsUnique()
 	{
-		Truth.assertThat(this.service).isNotSameAs(ConversionService.newInstance());
+		Verify.that(ConversionService::newInstance).producesUniqueValues();
 	}
 
 	@Test
 	void testConvert()
 	{
-		Assertions.assertThrows(UnsupportedOperationException.class, () -> this.service.convert(new Object(), Integer.class));
+		Verify.that(() -> this.service.convert(new Object(), Integer.class)).doesThrow(UnsupportedOperationException.class);
 	}
 
 }

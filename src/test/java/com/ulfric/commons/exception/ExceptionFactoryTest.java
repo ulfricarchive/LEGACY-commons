@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import com.google.common.truth.Truth;
+import com.ulfric.verify.Verify;
 
 @DisplayName("Exception Factory")
 @RunWith(JUnitPlatform.class)
@@ -18,13 +18,13 @@ class ExceptionFactoryTest {
 	@Test
 	void testIsNotNull()
 	{
-		Truth.assertThat(this.factory).isNotNull();
+		Verify.that(this.factory).isNotNull();
 	}
 
 	@Test
 	void testIsNotUnique()
 	{
-		Truth.assertThat(this.factory).isSameAs(ExceptionFactory.of(Ex.class));
+		Verify.that(() -> ExceptionFactory.of(Ex.class)).producesNonUniqueValues();
 	}
 
 	@Test
@@ -43,7 +43,7 @@ class ExceptionFactoryTest {
 		}
 		catch (Ex e)
 		{
-			Truth.assertThat(e.getCause()).isInstanceOf(NullPointerException.class);
+			Verify.that(e).wasCausedBy(NullPointerException.class);
 		}
 	}
 
