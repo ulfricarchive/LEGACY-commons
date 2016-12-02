@@ -1,5 +1,10 @@
 package com.ulfric.commons.convert;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.ulfric.commons.exception.Failure;
+
 public final class ConversionService {
 
 	public static ConversionService newInstance()
@@ -9,14 +14,40 @@ public final class ConversionService {
 
 	private ConversionService() { }
 
-	public <T> T convert(Object object, T to)
+	private final Map<MultiType, Map<MultiType, Converter<?>>> converters = new HashMap<>();
+
+	public <T> T convert(Class<T> to, Object from)
 	{
-		return convert(Token.of(object), to);
+		return this.convert(MultiType.of(to), Token.of(from));
 	}
 
-	public <T> T convert(Token token, T to)
+	private <T> T convert(MultiType to, Token from)
 	{
-		throw new UnsupportedOperationException();
+		// TODO fast lookups
+
+		Map<MultiType, Converter<?>> converters = this.getValue(this.converters, to);
+
+		if (converters != null)
+		{
+			Converter<?> converter = this.getValue(converters, from.toTypeHash());
+
+			if (converter != null)
+			{
+				@SuppressWarnings("unchecked")
+				T result = (T) converter.apply(from);
+				return result;
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		T result = (T) from.firstMatch(to).orElseGet(() ->
+			Failure.raise(ConversionException.class, "Unable to convert " + from.toTypeHash() + " to " + to));
+		return result;
+	}
+
+	private <V> V getValue(Map<MultiType, V> map, MultiType type)
+	{
+		return map.get(type);
 	}
 
 }

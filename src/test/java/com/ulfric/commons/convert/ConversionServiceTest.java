@@ -35,7 +35,8 @@ class ConversionServiceTest {
 	@Test
 	void testConvert()
 	{
-		Verify.that(() -> this.service.convert(new Object(), Integer.class)).doesThrow(UnsupportedOperationException.class);
+		Object sample = new Object();
+		Verify.that(this.service.convert(Object.class, sample)).isSame(sample);
 	}
 
 }
