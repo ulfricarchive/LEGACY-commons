@@ -3,12 +3,12 @@ package com.ulfric.commons.convert;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class Token {
+public abstract class MultiObject {
 
-	public static Token of(Object object)
+	public static MultiObject of(Object object)
 	{
 		Objects.requireNonNull(object);
-		return new TokenOne(object);
+		return new MultiObjectSingle(object);
 	}
 
 	public abstract MultiType toType();
@@ -21,9 +21,9 @@ public abstract class Token {
 	@Override
 	public abstract int hashCode();
 
-	private static final class TokenOne extends Token
+	private static final class MultiObjectSingle extends MultiObject
 	{
-		TokenOne(Object value)
+		MultiObjectSingle(Object value)
 		{
 			this.value = value;
 		}
@@ -50,12 +50,12 @@ public abstract class Token {
 				return true;
 			}
 
-			if (!(object instanceof TokenOne))
+			if (!(object instanceof MultiObjectSingle))
 			{
 				return false;
 			}
 
-			TokenOne that = (TokenOne) object;
+			MultiObjectSingle that = (MultiObjectSingle) object;
 
 			return this.value.equals(that.value);
 		}

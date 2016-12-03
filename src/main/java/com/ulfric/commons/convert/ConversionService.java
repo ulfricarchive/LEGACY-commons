@@ -18,24 +18,24 @@ public final class ConversionService {
 
 	public Conversion convert(Object from)
 	{
-		return new Conversion(Token.of(from));
+		return new Conversion(MultiObject.of(from));
 	}
 
 	public final class Conversion
 	{
-		Conversion(Token from)
+		Conversion(MultiObject from)
 		{
 			this.from = from;
 		}
 
-		private final Token from;
+		private final MultiObject from;
 
 		public <T> T to(Class<T> to)
 		{
 			return this.convert(MultiType.of(to), this.from);
 		}
 
-		private <T> T convert(MultiType to, Token from)
+		private <T> T convert(MultiType to, MultiObject from)
 		{
 			// TODO cached lookups
 
