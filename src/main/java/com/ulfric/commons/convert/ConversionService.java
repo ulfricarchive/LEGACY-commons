@@ -27,6 +27,11 @@ public final class ConversionService {
 		return new Conversion(MultiObject.of(from));
 	}
 
+	public Conversion convert(Object... from)
+	{
+		return new Conversion(MultiObject.of(from));
+	}
+
 	public void register(Converter<?> converter)
 	{
 		Objects.requireNonNull(converter);

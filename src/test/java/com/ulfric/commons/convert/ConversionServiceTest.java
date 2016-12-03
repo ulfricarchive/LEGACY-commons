@@ -47,7 +47,23 @@ class ConversionServiceTest {
 	}
 
 	@Test
-	void testConvertToNumber()
+	void testConvertMultiOfSameTypeToString()
+	{
+		Integer sample1 = 1;
+		Integer sample2 = 2;
+		Verify.that(this.service.convert(sample1, sample2).to(String.class)).isEqualTo("[1, 2]");
+	}
+
+	@Test
+	void testConvertMultiOfDifferentTypesToString()
+	{
+		Integer sample1 = 1;
+		Double sample2 = 2D;
+		Verify.that(this.service.convert(sample1, sample2).to(String.class)).isEqualTo("[1, 2.0]");
+	}
+
+	@Test
+	void testConvertSubclassToSuperclass()
 	{
 		Integer sample = 5;
 		Verify.that(this.service.convert(sample).to(Number.class)).isSameAs(sample);

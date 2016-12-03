@@ -37,14 +37,14 @@ abstract class MultiObject {
 	@Override
 	public abstract String toString();
 
-	private static final class MultiObjectSingle extends MultiObject
+	static final class MultiObjectSingle extends MultiObject
 	{
 		MultiObjectSingle(Object value)
 		{
 			this.value = value;
 		}
 
-		private final Object value;
+		final Object value;
 		private MultiType type;
 
 		@Override
@@ -101,7 +101,7 @@ abstract class MultiObject {
 		}
 	}
 
-	private static final class MultiObjectMany extends MultiObject
+	static final class MultiObjectMany extends MultiObject
 	{
 		MultiObjectMany(Iterable<?> values)
 		{
