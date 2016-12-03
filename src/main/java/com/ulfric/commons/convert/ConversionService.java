@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.ulfric.commons.collect.MappingUtils;
 import com.ulfric.commons.exception.Failure;
 
 public final class ConversionService {
@@ -27,7 +28,7 @@ public final class ConversionService {
 	{
 		Objects.requireNonNull(converter);
 
-		this.converters.computeIfAbsent(converter.getTo(), k -> new HashMap<>()).put(converter.getFrom(), converter);
+		this.converters.computeIfAbsent(converter.getTo(), MappingUtils::newMap).put(converter.getFrom(), converter);
 		this.resolved.clear();
 	}
 
