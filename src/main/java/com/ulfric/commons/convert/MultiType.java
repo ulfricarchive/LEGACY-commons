@@ -18,6 +18,10 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 
 	static MultiType of(Class<?>... types)
 	{
+		if (types.length == 1)
+		{
+			return MultiType.of(types[0]);
+		}
 		return new MultiTypeMany(Arrays.asList(types));
 	}
 
@@ -29,6 +33,8 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 	public abstract boolean isInstance(Object value);
 
 	public abstract boolean isAssignableFrom(MultiType type);
+
+	public abstract Class<?> getSharedType();
 
 	@Override
 	public abstract int hashCode();
@@ -86,6 +92,12 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 		public Iterator<Class<?>> iterator()
 		{
 			return new SingletonIterator<>(this.type);
+		}
+
+		@Override
+		public Class<?> getSharedType()
+		{
+			return this.type;
 		}
 
 		@Override
@@ -205,6 +217,13 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 			MultiTypeMany that = (MultiTypeMany) object;
 
 			return this.types.equals(that.types);
+		}
+
+		@Override
+		public Class<?> getSharedType()
+		{
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 
