@@ -14,40 +14,55 @@ public final class ConversionService {
 
 	private ConversionService() { }
 
-	private final Map<MultiType, Map<MultiType, Converter<?>>> converters = new HashMap<>();
+	final Map<MultiType, Map<MultiType, Converter<?>>> converters = new HashMap<>();
 
-	public <T> T convert(Class<T> to, Object from)
+	public Conversion convert(Object from)
 	{
-		return this.convert(MultiType.of(to), Token.of(from));
+		return new Conversion(Token.of(from));
 	}
 
-	private <T> T convert(MultiType to, Token from)
+	public final class Conversion
 	{
-		// TODO fast lookups
-
-		Map<MultiType, Converter<?>> converters = this.getValue(this.converters, to);
-
-		if (converters != null)
+		Conversion(Token from)
 		{
-			Converter<?> converter = this.getValue(converters, from.toTypeHash());
-
-			if (converter != null)
-			{
-				@SuppressWarnings("unchecked")
-				T result = (T) converter.apply(from);
-				return result;
-			}
+			this.from = from;
 		}
 
-		@SuppressWarnings("unchecked")
-		T result = (T) from.firstMatch(to).orElseGet(() ->
-			Failure.raise(ConversionException.class, "Unable to convert " + from.toTypeHash() + " to " + to));
-		return result;
-	}
+		private final Token from;
 
-	private <V> V getValue(Map<MultiType, V> map, MultiType type)
-	{
-		return map.get(type);
+		public <T> T to(Class<T> to)
+		{
+			return this.convert(MultiType.of(to), this.from);
+		}
+
+		private <T> T convert(MultiType to, Token from)
+		{
+			// TODO fast lookups
+
+			Map<MultiType, Converter<?>> converters = this.getValue(ConversionService.this.converters, to);
+
+			if (converters != null)
+			{
+				Converter<?> converter = this.getValue(converters, from.toTypeHash());
+
+				if (converter != null)
+				{
+					@SuppressWarnings("unchecked")
+					T result = (T) converter.apply(from);
+					return result;
+				}
+			}
+
+			@SuppressWarnings("unchecked")
+			T result = (T) from.firstMatch(to).orElseGet(() ->
+				Failure.raise(ConversionException.class, "Unable to convert " + from.toTypeHash() + " to " + to));
+			return result;
+		}
+
+		private <V> V getValue(Map<MultiType, V> map, MultiType type)
+		{
+			return map.get(type);
+		}
 	}
 
 }

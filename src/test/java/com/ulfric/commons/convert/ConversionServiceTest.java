@@ -36,7 +36,7 @@ class ConversionServiceTest {
 	void testConvert()
 	{
 		Object sample = new Object();
-		Verify.that(this.service.convert(Object.class, sample)).isSame(sample);
+		Verify.that(this.service.convert(sample).to(Object.class)).isSame(sample);
 	}
 
 }
