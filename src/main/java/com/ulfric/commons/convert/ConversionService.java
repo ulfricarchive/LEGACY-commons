@@ -2,6 +2,7 @@ package com.ulfric.commons.convert;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.ulfric.commons.exception.Failure;
 
@@ -20,6 +21,14 @@ public final class ConversionService {
 	public Conversion convert(Object from)
 	{
 		return new Conversion(MultiObject.of(from));
+	}
+
+	public void register(Converter<?> converter)
+	{
+		Objects.requireNonNull(converter);
+
+		this.converters.computeIfAbsent(converter.getTo(), k -> new HashMap<>()).put(converter.getFrom(), converter);
+		this.resolved.clear();
 	}
 
 	public final class Conversion
