@@ -14,7 +14,10 @@ public final class ConversionService {
 		return new ConversionService();
 	}
 
-	private ConversionService() { }
+	private ConversionService()
+	{
+		this.registerConverter(ConverterToString.INSTANCE);
+	}
 
 	final Map<MultiType, Map<MultiType, Converter<?>>> converters = new HashMap<>();
 	final Map<MultiType, Map<MultiType, Converter<?>>> resolved = new HashMap<>();
@@ -28,8 +31,13 @@ public final class ConversionService {
 	{
 		Objects.requireNonNull(converter);
 
-		this.converters.computeIfAbsent(converter.getTo(), MappingUtils::newMap).put(converter.getFrom(), converter);
+		this.registerConverter(converter);
 		this.resolved.clear();
+	}
+
+	private void registerConverter(Converter<?> converter)
+	{
+		this.converters.computeIfAbsent(converter.getTo(), MappingUtils::newMap).put(converter.getFrom(), converter);
 	}
 
 	public final class Conversion
@@ -81,6 +89,18 @@ public final class ConversionService {
 
 				if (converter != null)
 				{
+					converters.put(from, converter);
+					return this.runConverter(converter);
+				}
+
+				for (Map.Entry<MultiType, Converter<?>> entry : converters.entrySet())
+				{
+					if (!entry.getKey().isAssignableFrom(from))
+					{
+						continue;
+					}
+					converter = entry.getValue();
+
 					converters.put(from, converter);
 					return this.runConverter(converter);
 				}

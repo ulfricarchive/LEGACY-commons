@@ -23,4 +23,9 @@ public final class Failure extends RuntimeException {
 
 	private Failure() { }
 
+	private Failure(Throwable throwable)
+	{
+		super(throwable);
+	}
+
 }

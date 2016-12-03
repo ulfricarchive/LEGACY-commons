@@ -33,10 +33,17 @@ class ConversionServiceTest {
 	}
 
 	@Test
-	void testConvert()
+	void testConvertSame()
 	{
 		Object sample = new Object();
 		Verify.that(this.service.convert(sample).to(Object.class)).isSame(sample);
+	}
+
+	@Test
+	void testConvertToString()
+	{
+		Integer sample = 5;
+		Verify.that(this.service.convert(sample).to(String.class)).isEqual(sample.toString());
 	}
 
 }

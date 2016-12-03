@@ -34,6 +34,9 @@ abstract class MultiObject {
 	@Override
 	public abstract int hashCode();
 
+	@Override
+	public abstract String toString();
+
 	private static final class MultiObjectSingle extends MultiObject
 	{
 		MultiObjectSingle(Object value)
@@ -53,6 +56,18 @@ abstract class MultiObject {
 			}
 
 			return this.type = MultiType.of(this.value.getClass());
+		}
+
+		@Override
+		public Optional<?> firstMatch(MultiType type)
+		{
+			Object value = this.value;
+			if (type.isInstance(value))
+			{
+				return Optional.of(value);
+			}
+
+			return Optional.empty();
 		}
 
 		@Override
@@ -80,15 +95,9 @@ abstract class MultiObject {
 		}
 
 		@Override
-		public Optional<?> firstMatch(MultiType type)
+		public String toString()
 		{
-			Object value = this.value;
-			if (type.isInstance(value))
-			{
-				return Optional.of(value);
-			}
-
-			return Optional.empty();
+			return this.value.toString();
 		}
 	}
 
@@ -119,6 +128,20 @@ abstract class MultiObject {
 		}
 
 		@Override
+		public Optional<?> firstMatch(MultiType type)
+		{
+			for (Object value : this.values)
+			{
+				if (type.isInstance(value))
+				{
+					return Optional.of(value);
+				}
+			}
+
+			return Optional.empty();
+		}
+
+		@Override
 		public int hashCode()
 		{
 			return Objects.hash(this.values);
@@ -143,17 +166,9 @@ abstract class MultiObject {
 		}
 
 		@Override
-		public Optional<?> firstMatch(MultiType type)
+		public String toString()
 		{
-			for (Object value : this.values)
-			{
-				if (type.isInstance(value))
-				{
-					return Optional.of(value);
-				}
-			}
-
-			return Optional.empty();
+			return this.values.toString();
 		}
 	}
 

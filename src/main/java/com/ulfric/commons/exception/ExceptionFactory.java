@@ -49,9 +49,12 @@ public final class ExceptionFactory<X extends Throwable> extends Base {
 	{
 		try
 		{
-			return this.raise(exception.newInstance());
+			Constructor<? extends Throwable> constr = exception.getDeclaredConstructor();
+			constr.setAccessible(true);
+			return this.raise(constr.newInstance());
 		}
-		catch (InstantiationException | IllegalAccessException e)
+		catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
+				NoSuchMethodException | SecurityException | InvocationTargetException e)
 		{
 			throw new RuntimeException(e);
 		}
