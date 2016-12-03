@@ -37,13 +37,13 @@ public final class ConversionService {
 
 		private <T> T convert(MultiType to, Token from)
 		{
-			// TODO fast lookups
+			// TODO cached lookups
 
 			Map<MultiType, Converter<?>> converters = this.getValue(ConversionService.this.converters, to);
 
 			if (converters != null)
 			{
-				Converter<?> converter = this.getValue(converters, from.toTypeHash());
+				Converter<?> converter = this.getValue(converters, from.toType());
 
 				if (converter != null)
 				{
@@ -55,7 +55,7 @@ public final class ConversionService {
 
 			@SuppressWarnings("unchecked")
 			T result = (T) from.firstMatch(to).orElseGet(() ->
-				Failure.raise(ConversionException.class, "Unable to convert " + from.toTypeHash() + " to " + to));
+				Failure.raise(ConversionException.class, "Unable to convert " + from.toType() + " to " + to));
 			return result;
 		}
 

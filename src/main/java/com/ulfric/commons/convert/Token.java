@@ -11,7 +11,7 @@ public abstract class Token {
 		return new TokenOne(object);
 	}
 
-	public abstract MultiType toTypeHash();
+	public abstract MultiType toType();
 
 	public abstract Optional<?> firstMatch(MultiType type);
 
@@ -31,7 +31,7 @@ public abstract class Token {
 		private final Object value;
 
 		@Override
-		public MultiType toTypeHash()
+		public MultiType toType()
 		{
 			return MultiType.of(this.value.getClass());
 		}
