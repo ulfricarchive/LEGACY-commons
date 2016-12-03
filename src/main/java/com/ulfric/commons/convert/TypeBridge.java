@@ -13,7 +13,6 @@ public abstract class TypeBridge<T> {
 
 	public static Class<?> getClass(Type type)
 	{
-		System.out.println(type);
 		if (type instanceof Class)
 		{
 			return (Class<?>) type;

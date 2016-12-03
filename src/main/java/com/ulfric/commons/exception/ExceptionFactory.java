@@ -64,7 +64,8 @@ public final class ExceptionFactory<X extends Throwable> extends Base {
 	{
 		try
 		{
-			Constructor<? extends Throwable> constructor = throwable.getConstructor(String.class);
+			Constructor<? extends Throwable> constructor = throwable.getDeclaredConstructor(String.class);
+			constructor.setAccessible(true);
 			Throwable thrw = constructor.newInstance(message);
 			return this.raise(thrw);
 		}

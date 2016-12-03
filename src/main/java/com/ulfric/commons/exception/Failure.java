@@ -23,6 +23,11 @@ public final class Failure extends RuntimeException {
 
 	private Failure() { }
 
+	private Failure(String message)
+	{
+		super(message);
+	}
+
 	private Failure(Throwable throwable)
 	{
 		super(throwable);

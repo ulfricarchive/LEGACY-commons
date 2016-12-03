@@ -1,6 +1,6 @@
 package com.ulfric.commons.convert;
 
 @SuppressWarnings("serial")
-final class EarlyResolveException extends ConversionException {
+final class ValueMissingException extends ConversionException {
 
 }

@@ -6,6 +6,7 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 import com.ulfric.commons.collect.CollectionUtils;
 import com.ulfric.commons.collect.ImmutableIterator;
@@ -55,6 +56,9 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 	@Override
 	public abstract boolean equals(Object object);
 
+	@Override
+	public abstract String toString();
+
 	private static final class MultiTypeOne extends MultiType
 	{
 		MultiTypeOne(Class<?> type)
@@ -80,9 +84,9 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 
 			if (type instanceof MultiTypeOne)
 			{
-				MultiTypeOne o = (MultiTypeOne) type;
+				MultiTypeOne that = (MultiTypeOne) type;
 
-				return this.type.isAssignableFrom(o.type);
+				return this.type.isAssignableFrom(that.type);
 			}
 			else if (type == null)
 			{
@@ -90,15 +94,15 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 			}
 
 			Class<?> thisType = this.type;
-			for (Class<?> o : type)
+			for (Class<?> thatType : type)
 			{
-				if (thisType.isAssignableFrom(o))
+				if (!thisType.isAssignableFrom(thatType))
 				{
-					return true;
+					return false;
 				}
 			}
 
-			return false;
+			return true;
 		}
 	
 		@Override
@@ -135,6 +139,12 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 			MultiTypeOne that = (MultiTypeOne) object;
 
 			return this.type == that.type;
+		}
+
+		@Override
+		public String toString()
+		{
+			return this.type.getSimpleName();
 		}
 	}
 
@@ -209,6 +219,13 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 		}
 
 		@Override
+		public Class<?> getSharedType()
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
 		public int hashCode()
 		{
 			return Objects.hash(this.types);
@@ -233,10 +250,11 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 		}
 
 		@Override
-		public Class<?> getSharedType()
+		public String toString()
 		{
-			// TODO Auto-generated method stub
-			return null;
+			StringJoiner joiner = new StringJoiner(", ");
+			this.types.forEach(type -> joiner.add(type.getSimpleName()));
+			return joiner.toString();
 		}
 	}
 

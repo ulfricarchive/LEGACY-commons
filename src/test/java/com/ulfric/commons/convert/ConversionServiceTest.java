@@ -40,15 +40,17 @@ class ConversionServiceTest {
 	}
 
 	@Test
-	void testConvertToString()
+	void testConvertIntegerToString()
 	{
+		this.registerObjectToStringUmbrealla();
 		Integer sample = 5;
-		Verify.that(this.service.convert(sample).to(String.class)).isEqualTo(sample.toString());
+		this.service.convert(sample).to(String.class);
 	}
 
 	@Test
 	void testConvertMultiOfSameTypeToString()
 	{
+		this.registerObjectToStringUmbrealla();
 		Integer sample1 = 1;
 		Integer sample2 = 2;
 		Verify.that(this.service.convert(sample1, sample2).to(String.class)).isEqualTo("[1, 2]");
@@ -57,6 +59,7 @@ class ConversionServiceTest {
 	@Test
 	void testConvertMultiOfDifferentTypesToString()
 	{
+		this.registerObjectToStringUmbrealla();
 		Integer sample1 = 1;
 		Double sample2 = 2D;
 		Verify.that(this.service.convert(sample1, sample2).to(String.class)).isEqualTo("[1, 2.0]");
@@ -70,11 +73,31 @@ class ConversionServiceTest {
 	}
 
 	@Test
-	void testRegister()
+	void testRegisterStringToInteger()
 	{
-		this.service.register(SingleConverter.of(String.class, Integer.class, Integer::parseInt));
+		this.service.register(Converter.single(String.class, Integer.class, Integer::parseInt));
 		String sample = "5";
 		Verify.that(this.service.convert(sample).to(Integer.class)).isEqualTo(5);
+	}
+
+	@Test
+	void testRegisterStringToIntegerAndConvertStringToNumber()
+	{
+		this.service.register(Converter.single(String.class, Integer.class, Integer::parseInt));
+		String sample = "5";
+		Verify.that(this.service.convert(sample).to(Number.class)).isEqualTo(5);
+	}
+
+	private void registerObjectToStringUmbrealla()
+	{
+		this.service.register(new Converter<String>(MultiType.of(Object.class))
+		{
+			@Override
+			public String apply(MultiObject from)
+			{
+				return from.toString();
+			}
+		});
 	}
 
 }

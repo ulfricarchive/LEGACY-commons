@@ -14,10 +14,7 @@ public final class ConversionService {
 		return new ConversionService();
 	}
 
-	private ConversionService()
-	{
-		this.registerConverter(ConverterToString.INSTANCE);
-	}
+	private ConversionService() { }
 
 	final Map<MultiType, Map<MultiType, Converter<?>>> converters = new HashMap<>();
 	final Map<MultiType, Map<MultiType, Converter<?>>> resolved = new HashMap<>();
@@ -37,12 +34,28 @@ public final class ConversionService {
 		Objects.requireNonNull(converter);
 
 		this.registerConverter(converter);
+		this.rebuildCache();
+	}
+
+	void cacheConverter(Converter<?> converter)
+	{
+		this.putConverter(this.resolved, converter);
+	}
+
+	private void rebuildCache()
+	{
 		this.resolved.clear();
+		this.resolved.putAll(this.converters);
 	}
 
 	private void registerConverter(Converter<?> converter)
 	{
-		this.converters.computeIfAbsent(converter.getTo(), MappingUtils::newMap).put(converter.getFrom(), converter);
+		this.putConverter(this.converters, converter);
+	}
+
+	private void putConverter(Map<MultiType, Map<MultiType, Converter<?>>> map, Converter<?> converter)
+	{
+		map.computeIfAbsent(converter.getTo(), MappingUtils::newMap).put(converter.getFrom(), converter);
 	}
 
 	public final class Conversion
@@ -85,33 +98,25 @@ public final class ConversionService {
 
 		private <T> T resolve(MultiType to)
 		{
-			Map<MultiType, Converter<?>> converters = this.getValue(ConversionService.this.converters, to);
-
-			if (converters != null)
+			try
 			{
-				MultiType from = this.from.toType();
-				Converter<?> converter = this.getValue(converters, from);
+				Map<MultiType, Converter<?>> converters = this.getValue(ConversionService.this.converters, to, false);
+				Converter<?> converter = this.getValue(converters, this.from.toType(), true);
 
-				if (converter != null)
-				{
-					converters.put(from, converter);
-					return this.runConverter(converter);
-				}
-
-				for (Map.Entry<MultiType, Converter<?>> entry : converters.entrySet())
-				{
-					if (!entry.getKey().isAssignableFrom(from))
-					{
-						continue;
-					}
-					converter = entry.getValue();
-
-					converters.put(from, converter);
-					return this.runConverter(converter);
-				}
+				ConversionService.this.cacheConverter(converter);
+				return this.runConverter(converter);
 			}
+			catch (Failure failure)
+			{
+				Throwable cause = failure.getCause();
 
-			return this.selfMatch(to);
+				if (cause instanceof ValueMissingException)
+				{
+					return this.selfMatch(to);
+				}
+
+				return Failure.raise(cause);
+			}
 		}
 
 		private <T> T selfMatch(MultiType to)
@@ -145,9 +150,24 @@ public final class ConversionService {
 			return (T) converter.apply(this.from);
 		}
 
-		private <V> V getValue(Map<MultiType, V> map, MultiType type)
+		private <V> V getValue(Map<MultiType, V> map, MultiType type, boolean againstKey)
 		{
-			return map.get(type);
+			V value = map.get(type);
+
+			if (value != null)
+			{
+				return value;
+			}
+
+			for (MultiType key : map.keySet())
+			{
+				if (againstKey ? key.isAssignableFrom(type) : type.isAssignableFrom(key))
+				{
+					return map.get(key);
+				}
+			}
+
+			return Failure.raise(ValueMissingException.class);
 		}
 	}
 
