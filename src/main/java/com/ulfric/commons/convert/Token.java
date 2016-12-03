@@ -12,7 +12,14 @@ public abstract class Token {
 	}
 
 	public abstract MultiType toTypeHash();
+
 	public abstract Optional<?> firstMatch(MultiType type);
+
+	@Override
+	public abstract boolean equals(Object object);
+
+	@Override
+	public abstract int hashCode();
 
 	private static final class TokenOne extends Token
 	{
