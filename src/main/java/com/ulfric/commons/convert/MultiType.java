@@ -156,6 +156,7 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 		}
 
 		private final Iterable<Class<?>> types;
+		private Class<?> sharedType;
 
 		@Override
 		public boolean isInstance(Object value)
@@ -221,8 +222,13 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 		@Override
 		public Class<?> getSharedType()
 		{
+			if (this.sharedType != null)
+			{
+				return this.sharedType;
+			}
+
 			// TODO Auto-generated method stub
-			return null;
+			return this.sharedType = null;
 		}
 
 		@Override
