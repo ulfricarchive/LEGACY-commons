@@ -36,14 +36,21 @@ class ConversionServiceTest {
 	void testConvertSame()
 	{
 		Object sample = new Object();
-		Verify.that(this.service.convert(sample).to(Object.class)).isSame(sample);
+		Verify.that(this.service.convert(sample).to(Object.class)).isSameAs(sample);
 	}
 
 	@Test
 	void testConvertToString()
 	{
 		Integer sample = 5;
-		Verify.that(this.service.convert(sample).to(String.class)).isEqual(sample.toString());
+		Verify.that(this.service.convert(sample).to(String.class)).isEqualTo(sample.toString());
+	}
+
+	@Test
+	void testConvertToNumber()
+	{
+		Integer sample = 5;
+		Verify.that(this.service.convert(sample).to(Number.class)).isSameAs(sample);
 	}
 
 }
