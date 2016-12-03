@@ -1,14 +1,27 @@
 package com.ulfric.commons.convert;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class MultiObject {
+abstract class MultiObject {
 
-	public static MultiObject of(Object object)
+	static MultiObject of(Object object)
 	{
 		Objects.requireNonNull(object);
 		return new MultiObjectSingle(object);
+	}
+
+	static MultiObject of(Object... objects)
+	{
+		Objects.requireNonNull(objects);
+		for (Object object : objects)
+		{
+			Objects.requireNonNull(object);
+		}
+		return new MultiObjectMany(Arrays.asList(objects));
 	}
 
 	public abstract MultiType toType();
@@ -63,9 +76,69 @@ public abstract class MultiObject {
 		@Override
 		public Optional<?> firstMatch(MultiType type)
 		{
-			if (type.isInstance(this.value))
+			Object value = this.value;
+			if (type.isInstance(value))
 			{
-				return Optional.of(this.value);
+				return Optional.of(value);
+			}
+
+			return Optional.empty();
+		}
+	}
+
+	private static final class MultiObjectMany extends MultiObject
+	{
+		MultiObjectMany(Iterable<?> values)
+		{
+			this.values = values;
+		}
+
+		private final Iterable<?> values;
+
+		@Override
+		public MultiType toType()
+		{
+			List<Class<?>> classes = new ArrayList<>();
+			for (Object value : this.values)
+			{
+				classes.add(value.getClass());
+			}
+			return MultiType.of(classes);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(this.values);
+		}
+
+		@Override
+		public boolean equals(Object object)
+		{
+			if (object == this)
+			{
+				return true;
+			}
+
+			if (!(object instanceof MultiObjectMany))
+			{
+				return false;
+			}
+
+			MultiObjectMany that = (MultiObjectMany) object;
+
+			return this.values.equals(that.values);
+		}
+
+		@Override
+		public Optional<?> firstMatch(MultiType type)
+		{
+			for (Object value : this.values)
+			{
+				if (type.isInstance(value))
+				{
+					return Optional.of(value);
+				}
 			}
 
 			return Optional.empty();

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
+import com.ulfric.commons.collect.CollectionUtils;
 import com.ulfric.commons.collect.ImmutableIterator;
 import com.ulfric.commons.collect.SingletonIterator;
 
@@ -18,6 +19,11 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 	static MultiType of(Class<?>... types)
 	{
 		return new MultiTypeMany(Arrays.asList(types));
+	}
+
+	static MultiType of(Iterable<Class<?>> types)
+	{
+		return new MultiTypeMany(CollectionUtils.copyToList(types));
 	}
 
 	public abstract boolean isInstance(Object value);
