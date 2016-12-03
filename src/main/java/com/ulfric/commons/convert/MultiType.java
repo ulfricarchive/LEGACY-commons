@@ -2,7 +2,9 @@ package com.ulfric.commons.convert;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 
 import com.ulfric.commons.collect.CollectionUtils;
@@ -11,9 +13,11 @@ import com.ulfric.commons.collect.SingletonIterator;
 
 abstract class MultiType implements Type, Iterable<Class<?>> {
 
+	private static final Map<Class<?>, MultiType> CACHED_SINGLE_TYPES = new IdentityHashMap<>();
+
 	static MultiType of(Class<?> type)
 	{
-		return new MultiTypeOne(type);
+		return MultiType.CACHED_SINGLE_TYPES.computeIfAbsent(type, MultiTypeOne::new);
 	}
 
 	static MultiType of(Class<?>... types)
