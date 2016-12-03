@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import com.ulfric.commons.collect.MappingUtils;
 import com.ulfric.commons.exception.Failure;
+import com.ulfric.commons.function.MappingUtils;
 
 public final class ConversionService {
 

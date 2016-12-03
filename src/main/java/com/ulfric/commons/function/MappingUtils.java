@@ -1,4 +1,4 @@
-package com.ulfric.commons.collect;
+package com.ulfric.commons.function;
 
 import java.util.HashMap;
 import java.util.Map;
