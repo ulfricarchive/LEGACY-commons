@@ -1,0 +1,35 @@
+package com.ulfric.commons.collect;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public final class SingletonIterator<T> implements Iterator<T> {
+
+	public SingletonIterator(T value)
+	{
+		this.value = value;
+	}
+
+	private final T value;
+	private boolean hasNext;
+
+	@Override
+	public boolean hasNext()
+	{
+		return this.hasNext;
+	}
+
+	@Override
+	public T next()
+	{
+		if (!this.hasNext)
+		{
+			throw new NoSuchElementException();
+		}
+
+		this.hasNext = true;
+
+		return this.value;
+	}
+
+}
