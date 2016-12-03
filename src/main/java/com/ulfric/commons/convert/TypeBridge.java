@@ -6,9 +6,9 @@ import java.util.Arrays;
 
 public abstract class TypeBridge<T> {
 
-	public static <T> TypeBridge<T> of(Class<?> clazz)
+	public static <T> TypeBridge<T> of(Class<?> resolve)
 	{
-		return new TypeBridge<T>(clazz) { };
+		return new TypeBridge<T>(resolve) { };
 	}
 
 	public static Class<?> getClass(Type type)
