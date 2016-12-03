@@ -69,4 +69,12 @@ class ConversionServiceTest {
 		Verify.that(this.service.convert(sample).to(Number.class)).isSameAs(sample);
 	}
 
+	@Test
+	void testRegister()
+	{
+		this.service.register(SingleConverter.of(String.class, Integer.class, Integer::parseInt));
+		String sample = "5";
+		Verify.that(this.service.convert(sample).to(Integer.class)).isEqualTo(5);
+	}
+
 }

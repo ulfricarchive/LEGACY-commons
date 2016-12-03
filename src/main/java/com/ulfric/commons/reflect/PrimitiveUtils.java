@@ -20,15 +20,11 @@ public class PrimitiveUtils implements Util {
 		PrimitiveUtils.PRIMITIVE_TO_OBJECT.put(long.class, Long.class);
 		PrimitiveUtils.PRIMITIVE_TO_OBJECT.put(float.class, Float.class);
 		PrimitiveUtils.PRIMITIVE_TO_OBJECT.put(double.class, Double.class);
+		PrimitiveUtils.PRIMITIVE_TO_OBJECT.put(null, Object.class);
 	}
 
 	public static Class<?> box(Class<?> clazz)
 	{
-		if (!clazz.isPrimitive())
-		{
-			return clazz;
-		}
-
 		return PrimitiveUtils.PRIMITIVE_TO_OBJECT.getOrDefault(clazz, clazz);
 	}
 
