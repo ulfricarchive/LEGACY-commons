@@ -42,11 +42,17 @@ abstract class MultiObject {
 		}
 
 		private final Object value;
+		private MultiType type;
 
 		@Override
 		public MultiType toType()
 		{
-			return MultiType.of(this.value.getClass());
+			if (this.type != null)
+			{
+				return this.type;
+			}
+
+			return this.type = MultiType.of(this.value.getClass());
 		}
 
 		@Override
@@ -94,16 +100,22 @@ abstract class MultiObject {
 		}
 
 		private final Iterable<?> values;
+		private MultiType type;
 
 		@Override
 		public MultiType toType()
 		{
+			if (this.type != null)
+			{
+				return this.type;
+			}
+
 			List<Class<?>> classes = new ArrayList<>();
 			for (Object value : this.values)
 			{
 				classes.add(value.getClass());
 			}
-			return MultiType.of(classes);
+			return this.type = MultiType.of(classes);
 		}
 
 		@Override
