@@ -7,7 +7,7 @@ abstract class MultiType implements Type {
 
 	static MultiType of(Class<?> type)
 	{
-		return new TypeHashOne(type);
+		return new MultiTypeOne(type);
 	}
 
 	@Override
@@ -18,9 +18,9 @@ abstract class MultiType implements Type {
 
 	public abstract boolean isInstance(Object value);
 
-	private static final class TypeHashOne extends MultiType
+	private static final class MultiTypeOne extends MultiType
 	{
-		TypeHashOne(Class<?> type)
+		MultiTypeOne(Class<?> type)
 		{
 			this.type = type;
 		}
@@ -47,12 +47,12 @@ abstract class MultiType implements Type {
 				return true;
 			}
 
-			if (!(object instanceof TypeHashOne))
+			if (!(object instanceof MultiTypeOne))
 			{
 				return false;
 			}
 
-			TypeHashOne that = (TypeHashOne) object;
+			MultiTypeOne that = (MultiTypeOne) object;
 
 			return this.type == that.type;
 		}
