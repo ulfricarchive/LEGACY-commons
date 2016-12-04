@@ -49,7 +49,7 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 
 	public abstract boolean isAssignableFrom(MultiType type);
 
-	public abstract Class<?> getSharedType();
+	public abstract Class<?> getCommonType();
 
 	@Override
 	public abstract int hashCode();
@@ -113,7 +113,7 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 		}
 
 		@Override
-		public Class<?> getSharedType()
+		public Class<?> getCommonType()
 		{
 			return this.type;
 		}
@@ -221,7 +221,7 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 		}
 
 		@Override
-		public Class<?> getSharedType()
+		public Class<?> getCommonType()
 		{
 			if (this.sharedType != null)
 			{

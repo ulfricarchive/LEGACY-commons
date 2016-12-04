@@ -32,7 +32,7 @@ public abstract class TypeBridge<T> {
 		if (type instanceof MultiType)
 		{
 			MultiType mtype = (MultiType) type;
-			return mtype.getSharedType();
+			return mtype.getCommonType();
 		}
 
 		throw new UnsupportedOperationException("Bad type: " + type.getClass());
