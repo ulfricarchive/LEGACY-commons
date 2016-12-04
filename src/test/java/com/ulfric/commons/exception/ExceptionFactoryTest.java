@@ -24,7 +24,7 @@ class ExceptionFactoryTest {
 	@Test
 	void testIsNotUnique()
 	{
-		Verify.that(() -> ExceptionFactory.of(Ex.class)).producesNonUniqueValues();
+		Verify.that(() -> ExceptionFactory.of(Ex.class)).suppliesNonUniqueValues();
 	}
 
 	@Test

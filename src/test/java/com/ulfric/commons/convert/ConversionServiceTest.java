@@ -34,7 +34,7 @@ class ConversionServiceTest {
 	@Test
 	void testNewInstanceIsUnique()
 	{
-		Verify.that(ConversionService::newInstance).producesUniqueValues();
+		Verify.that(ConversionService::newInstance).suppliesUniqueValues();
 	}
 
 	@Test
