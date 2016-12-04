@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.ulfric.commons.exception.Failure;
-import com.ulfric.commons.function.MappingUtils;
 
 public final class ConversionService {
 
@@ -55,7 +54,7 @@ public final class ConversionService {
 
 	private void putConverter(Map<MultiType, Map<MultiType, Converter<?>>> map, Converter<?> converter)
 	{
-		map.computeIfAbsent(converter.getTo(), MappingUtils::newMap).put(converter.getFrom(), converter);
+		map.computeIfAbsent(converter.getTo(), ignore -> new HashMap<>()).put(converter.getFrom(), converter);
 	}
 
 	public final class Conversion
