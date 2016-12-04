@@ -11,6 +11,7 @@ import java.util.StringJoiner;
 import com.ulfric.commons.collect.CollectionUtils;
 import com.ulfric.commons.collect.ImmutableIterator;
 import com.ulfric.commons.collect.SingletonIterator;
+import com.ulfric.commons.reflect.ClassUtils;
 import com.ulfric.commons.reflect.PrimitiveUtils;
 
 abstract class MultiType implements Type, Iterable<Class<?>> {
@@ -227,8 +228,7 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 				return this.sharedType;
 			}
 
-			// TODO Auto-generated method stub
-			return this.sharedType = null;
+			return this.sharedType = ClassUtils.getCommonClass(this.types);
 		}
 
 		@Override
