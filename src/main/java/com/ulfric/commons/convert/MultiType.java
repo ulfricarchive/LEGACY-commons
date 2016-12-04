@@ -18,6 +18,11 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 
 	private static final Map<Class<?>, MultiType> CACHED_SINGLE_TYPES = new IdentityHashMap<>();
 
+	static MultiType object()
+	{
+		return MultiType.of(Object.class);
+	}
+
 	static MultiType of(Class<?> type)
 	{
 		Class<?> boxed = PrimitiveUtils.box(type);

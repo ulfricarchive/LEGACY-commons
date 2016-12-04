@@ -72,7 +72,7 @@ public final class ConversionService {
 			return this.convert(MultiType.of(to));
 		}
 
-		public <T> T to(Class<?>... to)
+		public Object to(Class<?>... to)
 		{
 			return this.convert(MultiType.of(to));
 		}

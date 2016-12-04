@@ -1,5 +1,10 @@
 package com.ulfric.commons.convert;
 
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,6 +91,21 @@ class ConversionServiceTest {
 		this.service.register(Converter.single(String.class, Integer.class, Integer::parseInt));
 		String sample = "5";
 		Verify.that(this.service.convert(sample).to(Number.class)).isEqualTo(5);
+	}
+
+	@Test
+	void testMultiType()
+	{
+		this.service.register(new Converter<Object>(MultiType.object(), MultiType.of(NavigableMap.class, SortedMap.class)) {
+			@Override
+			public Object apply(MultiObject from)
+			{
+				return new TreeMap<>();
+			}
+		});
+
+		Verify.that(this.service.convert(new Object()).to(Map.class)).isExactType(TreeMap.class);
+		Verify.that(this.service.convert(new Object()).to(NavigableMap.class, SortedMap.class)).isExactType(TreeMap.class);
 	}
 
 	private void registerObjectToStringUmbrealla()
