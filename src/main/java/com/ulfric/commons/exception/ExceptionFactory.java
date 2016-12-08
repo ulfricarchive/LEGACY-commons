@@ -5,9 +5,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.ulfric.commons.api.Base;
+import com.ulfric.commons.api.Bean;
 
-public final class ExceptionFactory<X extends Throwable> extends Base {
+public final class ExceptionFactory<X extends Throwable> extends Bean {
 
 	private static final Map<Class<? extends Throwable>, ExceptionFactory<?>> FACTORIES = new IdentityHashMap<>();
 

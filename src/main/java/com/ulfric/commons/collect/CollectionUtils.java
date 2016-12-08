@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.ulfric.commons.api.Util;
+import com.ulfric.commons.api.UtilInstantiationException;
 
-public class CollectionUtils implements Util {
+public class CollectionUtils {
 
 	public static <T> List<T> copyToList(Iterable<T> iterable)
 	{
@@ -22,7 +22,7 @@ public class CollectionUtils implements Util {
 
 	private CollectionUtils()
 	{
-		Util.onConstruct();
+		throw new UtilInstantiationException();
 	}
 
 }

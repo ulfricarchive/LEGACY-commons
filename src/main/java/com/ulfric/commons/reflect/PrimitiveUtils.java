@@ -3,9 +3,9 @@ package com.ulfric.commons.reflect;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.ulfric.commons.api.Util;
+import com.ulfric.commons.api.UtilInstantiationException;
 
-public class PrimitiveUtils implements Util {
+public class PrimitiveUtils {
 
 	private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_OBJECT = new IdentityHashMap<>();
 
@@ -30,7 +30,7 @@ public class PrimitiveUtils implements Util {
 
 	private PrimitiveUtils()
 	{
-		Util.onConstruct();
+		throw new UtilInstantiationException();
 	}
 
 }

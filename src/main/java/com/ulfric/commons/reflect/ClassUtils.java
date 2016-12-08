@@ -8,15 +8,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import com.ulfric.commons.api.Util;
+import com.ulfric.commons.api.UtilInstantiationException;
 
-public class ClassUtils implements Util {
+public class ClassUtils {
 
+	// TODO change to getCommonClasses
 	public static Class<?> getCommonClass(Class<?>... classes)
 	{
 		return ClassUtils.getCommonClass(Arrays.asList(classes));
 	}
 
+	// TODO change to getCommonClasses
 	public static Class<?> getCommonClass(Iterable<Class<?>> classes)
 	{
 		Objects.requireNonNull(classes);
@@ -78,7 +80,7 @@ public class ClassUtils implements Util {
 
 	private ClassUtils()
 	{
-		Util.onConstruct();
+		throw new UtilInstantiationException();
 	}
 
 }
