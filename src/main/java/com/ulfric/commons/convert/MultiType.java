@@ -12,7 +12,6 @@ import com.ulfric.commons.collect.CollectionUtils;
 import com.ulfric.commons.collect.ImmutableIterator;
 import com.ulfric.commons.collect.SingletonIterator;
 import com.ulfric.commons.reflect.ClassUtils;
-import com.ulfric.commons.reflect.PrimitiveUtils;
 
 abstract class MultiType implements Type, Iterable<Class<?>> {
 
@@ -25,7 +24,7 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 
 	static MultiType of(Class<?> type)
 	{
-		Class<?> boxed = PrimitiveUtils.box(type);
+		Class<?> boxed = ClassUtils.box(type);
 		return MultiType.CACHED_SINGLE_TYPES.computeIfAbsent(boxed, MultiTypeOne::new);
 	}
 
@@ -40,7 +39,7 @@ abstract class MultiType implements Type, Iterable<Class<?>> {
 		Class<?>[] typesClone = types.clone();
 		for (int x = 0; x < length; x++)
 		{
-			typesClone[x] = PrimitiveUtils.box(typesClone[x]);
+			typesClone[x] = ClassUtils.box(typesClone[x]);
 		}
 		return new MultiTypeMany(Arrays.asList(typesClone));
 	}
