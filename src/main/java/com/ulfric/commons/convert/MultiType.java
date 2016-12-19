@@ -13,7 +13,7 @@ import com.ulfric.commons.collect.ImmutableIterator;
 import com.ulfric.commons.collect.SingletonIterator;
 import com.ulfric.commons.reflect.ClassUtils;
 
-abstract class MultiType implements Type, Iterable<Class<?>> {
+public abstract class MultiType implements Type, Iterable<Class<?>> {
 
 	private static final Map<Class<?>, MultiType> CACHED_SINGLE_TYPES = new IdentityHashMap<>();
 

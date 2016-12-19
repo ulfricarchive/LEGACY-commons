@@ -98,10 +98,7 @@ public class ClassUtils {
 				{
 					nextLayer.add(superClass);
 				}
-				for (Class<?> eachInt : each.getInterfaces())
-				{
-					nextLayer.add(eachInt);
-				}
+				Arrays.stream(each.getInterfaces()).forEach(nextLayer::add);
 			}
 		}
 		while (!nextLayer.isEmpty());

@@ -5,9 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.ulfric.commons.api.Bean;
-
-public final class ExceptionFactory<X extends Throwable> extends Bean {
+final class ExceptionFactory<X extends Throwable> {
 
 	private static final Map<Class<? extends Throwable>, ExceptionFactory<?>> FACTORIES = new IdentityHashMap<>();
 
@@ -83,15 +81,7 @@ public final class ExceptionFactory<X extends Throwable> extends Bean {
 
 	private void sneakyThrow(Throwable throwable)
 	{
-		try
-		{
-			Throwable exception = this.constructor.newInstance(throwable);
-			ExceptionFactory.<RuntimeException>sneaky(exception);
-		}
-		catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-		{
-			throw new ShouldNeverHappenException(e);
-		}
+		CallableUtils.tryCall(() -> this.constructor.newInstance(throwable)).ifSuccess(ExceptionFactory::sneaky);
 	}
 
 	@SuppressWarnings("unchecked")
