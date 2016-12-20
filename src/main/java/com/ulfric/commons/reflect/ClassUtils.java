@@ -53,26 +53,70 @@ public class ClassUtils {
 		Objects.requireNonNull(classes);
 		classes.forEach(Objects::requireNonNull);
 
-		Iterator<Class<?>> classesIterator = classes.iterator();
+		Set<Class<?>> related = ClassUtils.getRelatedClasses(classes.iterator());
 
-		if (!classesIterator.hasNext())
+		ClassUtils.removeDuplicateEntries(related);
+		ClassUtils.ensureNotEmpty(related);
+
+		return related;
+	}
+
+	private static Set<Class<?>> getRelatedClasses(Iterator<Class<?>> classes)
+	{
+		ClassUtils.validateClassIterator(classes);
+
+		Set<Class<?>> related = ClassUtils.getAssignableTo(classes.next());
+
+		while (classes.hasNext())
 		{
-			throw new IllegalArgumentException("No classes to get the common value from");
-		}
-
-		Set<Class<?>> related = ClassUtils.getAssignableTo(classesIterator.next());
-
-		while (classesIterator.hasNext())
-		{
-			related.retainAll(ClassUtils.getAssignableTo(classesIterator.next()));
-		}
-
-		if (related.isEmpty())
-		{
-			related.add(Object.class);
+			related.retainAll(ClassUtils.getAssignableTo(classes.next()));
 		}
 
 		return related;
+	}
+
+	private static void validateClassIterator(Iterator<Class<?>> classes)
+	{
+		if (classes.hasNext())
+		{
+			return;
+		}
+
+		throw new IllegalArgumentException("No classes to get the common value from");
+	}
+
+	private static void ensureNotEmpty(Set<Class<?>> classes)
+	{
+		if (!classes.isEmpty())
+		{
+			return;
+		}
+
+		classes.add(Object.class);
+	}
+
+	private static void removeDuplicateEntries(Set<Class<?>> classes)
+	{
+		Iterator<Class<?>> iterator = classes.iterator();
+
+		while (iterator.hasNext())
+		{
+			Class<?> current = iterator.next();
+
+			for (Class<?> inner : classes)
+			{
+				if (current ==  inner)
+				{
+					continue;
+				}
+
+				if (current.isAssignableFrom(inner))
+				{
+					iterator.remove();
+					break;
+				}
+			}
+		}
 	}
 
 	public static Set<Class<?>> getAssignableTo(Class<?> clazz)
