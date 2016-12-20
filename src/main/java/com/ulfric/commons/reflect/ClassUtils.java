@@ -43,14 +43,12 @@ public class ClassUtils {
 		return ClassUtils.OBJECT_TO_PRIMITIVE.getOrDefault(clazz, clazz);
 	}
 
-	// TODO change to getCommonClasses
-	public static Class<?> getCommonClass(Class<?>... classes)
+	public static Set<Class<?>> getCommonClasses(Class<?>... classes)
 	{
-		return ClassUtils.getCommonClass(Arrays.asList(classes));
+		return ClassUtils.getCommonClasses(Arrays.asList(classes));
 	}
 
-	// TODO change to getCommonClasses
-	public static Class<?> getCommonClass(Iterable<Class<?>> classes)
+	public static Set<Class<?>> getCommonClasses(Iterable<Class<?>> classes)
 	{
 		Objects.requireNonNull(classes);
 		classes.forEach(Objects::requireNonNull);
@@ -71,10 +69,10 @@ public class ClassUtils {
 
 		if (related.isEmpty())
 		{
-			return Object.class;
+			related.add(Object.class);
 		}
 
-		return related.iterator().next();
+		return related;
 	}
 
 	public static Set<Class<?>> getAssignableTo(Class<?> clazz)

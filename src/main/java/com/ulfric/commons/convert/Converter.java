@@ -25,7 +25,7 @@ public abstract class Converter<R> implements Function<MultiObject, R> {
 		Objects.requireNonNull(from);
 
 		this.from = from;
-		this.to = MultiType.of(TypeBridge.<R>of(this.getClass()).getType());
+		this.to = MultiType.of(TypeBridge.of(this.getClass()).getTypes());
 	}
 
 	public Converter(MultiType from, MultiType to)

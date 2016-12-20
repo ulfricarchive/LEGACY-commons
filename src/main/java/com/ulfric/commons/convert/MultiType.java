@@ -1,11 +1,15 @@
 package com.ulfric.commons.convert;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 
 import com.ulfric.commons.collect.CollectionUtils;
@@ -44,6 +48,16 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 		return new MultiTypeMany(Arrays.asList(typesClone));
 	}
 
+	static MultiType of(Collection<Class<?>> types)
+	{
+		if (types.size() == 1)
+		{
+			return MultiType.of(types.iterator().next());
+		}
+
+		return new MultiTypeMany(new ArrayList<>(types));
+	}
+
 	static MultiType of(Iterable<Class<?>> types)
 	{
 		return new MultiTypeMany(CollectionUtils.copyToList(types));
@@ -53,7 +67,7 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 
 	public abstract boolean isAssignableFrom(MultiType type);
 
-	public abstract Class<?> getCommonType();
+	public abstract Set<Class<?>> getCommonTypes();
 
 	@Override
 	public abstract int hashCode();
@@ -72,6 +86,7 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 		}
 
 		final Class<?> type;
+		private Set<Class<?>> common;
 
 		@Override
 		public boolean isInstance(Object value)
@@ -117,9 +132,14 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 		}
 
 		@Override
-		public Class<?> getCommonType()
+		public Set<Class<?>> getCommonTypes()
 		{
-			return this.type;
+			if (this.common != null)
+			{
+				return this.common;
+			}
+
+			return this.common = Collections.singleton(this.type);
 		}
 
 		@Override
@@ -161,7 +181,7 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 		}
 
 		private final Iterable<Class<?>> types;
-		private Class<?> sharedType;
+		private Set<Class<?>> sharedTypes;
 
 		@Override
 		public boolean isInstance(Object value)
@@ -225,14 +245,14 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 		}
 
 		@Override
-		public Class<?> getCommonType()
+		public Set<Class<?>> getCommonTypes()
 		{
-			if (this.sharedType != null)
+			if (this.sharedTypes != null)
 			{
-				return this.sharedType;
+				return this.sharedTypes;
 			}
 
-			return this.sharedType = ClassUtils.getCommonClass(this.types);
+			return this.sharedTypes = ClassUtils.getCommonClasses(this.types);
 		}
 
 		@Override
