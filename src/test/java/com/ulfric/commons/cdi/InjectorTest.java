@@ -6,6 +6,4 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitPlatform.class)
 class InjectorTest {
 
-	
-
 }

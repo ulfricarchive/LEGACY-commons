@@ -1,9 +1,9 @@
 package com.ulfric.commons.cdi;
 
-import java.util.function.Supplier;
-
 public interface Binding<T> {
 
-	void to(Supplier<? extends T> supplier);
+	void toSelf();
+
+	void to(Class<? extends T> provider);
 
 }

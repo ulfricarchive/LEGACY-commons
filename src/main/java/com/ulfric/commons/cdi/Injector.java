@@ -7,8 +7,7 @@ public interface Injector {
 		return new SimpleInjector();
 	}
 
-	<T> T request(Class<T> request);
-
+	<T> T create(Class<T> request);
 
 	<T> Binding<T> bind(Class<T> request);
 

@@ -21,7 +21,13 @@ public abstract class Result<R> {
 
 	public abstract Throwable thrown();
 
+	public abstract boolean isSuccess();
+
+	public abstract boolean isFailure();
+
 	public abstract Result<R> ifSuccess(Consumer<R> run);
+
+	public abstract Result<R> ifFailure(Consumer<Throwable> run);
 
 	public abstract Result<R> forceRun(Consumer<Object> run);
 
@@ -54,10 +60,28 @@ public abstract class Result<R> {
 		}
 
 		@Override
+		public Result<R> ifFailure(Consumer<Throwable> run)
+		{
+			return this;
+		}
+
+		@Override
 		public Result<R> forceRun(Consumer<Object> run)
 		{
 			run.accept(this.value);
 			return this;
+		}
+
+		@Override
+		public boolean isSuccess()
+		{
+			return true;
+		}
+
+		@Override
+		public boolean isFailure()
+		{
+			return false;
 		}
 	}
 
@@ -89,10 +113,29 @@ public abstract class Result<R> {
 		}
 
 		@Override
+		public Result<R> ifFailure(Consumer<Throwable> run)
+		{
+			run.accept(this.thrown);
+			return this;
+		}
+
+		@Override
 		public Result<R> forceRun(Consumer<Object> run)
 		{
 			run.accept(this.thrown);
 			return this;
+		}
+
+		@Override
+		public boolean isSuccess()
+		{
+			return false;
+		}
+
+		@Override
+		public boolean isFailure()
+		{
+			return true;
 		}
 	}
 
