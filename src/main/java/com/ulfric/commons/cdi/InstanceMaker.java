@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 import com.ulfric.commons.api.UtilInstantiationException;
+import com.ulfric.commons.reflect.proxy.ProxyUtils;
 import com.ulfric.commons.result.Result;
 import com.ulfric.commons.result.ValueMissingException;
 
@@ -37,7 +38,7 @@ final class InstanceMaker {
 
 	private static <T> T createInstanceFromInterface(Class<T> request)
 	{
-		throw new UnsupportedOperationException();
+		return ProxyUtils.newDeadProxy(request);
 	}
 
 	private static <T> Result<T> createInstanceFromDefaultConstructor(Class<T> request)
