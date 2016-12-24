@@ -1,9 +1,22 @@
 package com.ulfric.commons.result;
 
 import java.util.Objects;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 public interface Result<R> {
+
+	public static <R> Result<R> tryCall(Callable<R> callable)
+	{
+		try
+		{
+			return Result.of(callable.call());
+		}
+		catch (Exception failure)
+		{
+			return Result.ofThrown(failure);
+		}
+	}
 
 	public static <R> Result<R> empty()
 	{

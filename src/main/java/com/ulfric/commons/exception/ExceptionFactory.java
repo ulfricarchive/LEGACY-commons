@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import com.ulfric.commons.result.Result;
+
 final class ExceptionFactory<X extends Throwable> {
 
 	private static final Map<Class<? extends Throwable>, ExceptionFactory<?>> FACTORIES = new IdentityHashMap<>();
@@ -81,7 +83,7 @@ final class ExceptionFactory<X extends Throwable> {
 
 	private void sneakyThrow(Throwable throwable)
 	{
-		CallableUtils.tryCall(() -> this.constructor.newInstance(throwable)).ifSuccess(ExceptionFactory::sneaky);
+		Result.tryCall(() -> this.constructor.newInstance(throwable)).ifSuccess(ExceptionFactory::sneaky);
 	}
 
 	@SuppressWarnings("unchecked")
