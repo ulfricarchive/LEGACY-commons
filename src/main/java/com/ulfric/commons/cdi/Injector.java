@@ -1,5 +1,7 @@
 package com.ulfric.commons.cdi;
 
+import java.lang.annotation.Annotation;
+
 public interface Injector {
 
 	public static Injector newInstance()
@@ -12,5 +14,9 @@ public interface Injector {
 	void injectValues(Object object);
 
 	<T> Binding<T> bind(Class<T> request);
+
+	ScopeBinding bindScope(Class<? extends Annotation> scope);
+
+	Class<? extends Annotation> getScope(Class<?> provider);
 
 }

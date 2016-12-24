@@ -1,8 +1,7 @@
 package com.ulfric.commons.result;
 
+import java.util.Optional;
 import java.util.function.Consumer;
-
-import com.ulfric.commons.function.ValueMissingException;
 
 final class ThrownResult<R> implements Result<R> {
 
@@ -23,6 +22,12 @@ final class ThrownResult<R> implements Result<R> {
 	public Throwable thrown()
 	{
 		return this.thrown;
+	}
+
+	@Override
+	public Optional<R> toOptional()
+	{
+		return Optional.empty();
 	}
 
 	@Override

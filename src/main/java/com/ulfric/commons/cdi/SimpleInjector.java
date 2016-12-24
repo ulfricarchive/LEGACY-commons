@@ -1,9 +1,13 @@
 package com.ulfric.commons.cdi;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -17,9 +21,16 @@ final class SimpleInjector implements Injector {
 	SimpleInjector()
 	{
 		this.service = ConversionService.newInstance();
+		this.scopes = new IdentityHashMap<>();
+		this.sharedInstances = new InstancePool();
+
+		this.bindScope(Default.class).to(InstanceMaker::forceCreate);
+		this.bindScope(Shared.class).to(this.sharedInstances::getOrCreate);
 	}
 
 	final ConversionService service;
+	final Map<Class<? extends Annotation>, Function<Class<?>, ?>> scopes;
+	final InstancePool sharedInstances;
 
 	@Override
 	public <T> T create(Class<T> request)
@@ -145,6 +156,67 @@ final class SimpleInjector implements Injector {
 	}
 
 	@Override
+	public Class<? extends Annotation> getScope(Class<?> producer)
+	{
+		for (Annotation annotation : producer.getAnnotations())
+		{
+			Class<? extends Annotation> scope = this.getScopeFromAnnotation(annotation.annotationType());
+
+			if (scope != null)
+			{
+				return scope;
+			}
+		}
+
+		return Default.class;
+	}
+
+	private Class<? extends Annotation> getScopeFromAnnotation(Class<? extends Annotation> annotation)
+	{
+		if (this.isDirectScope(annotation))
+		{
+			return annotation;
+		}
+
+		for (Annotation present : annotation.getAnnotations())
+		{
+			Class<? extends Annotation> presentType = present.annotationType();
+
+			if (presentType == annotation)
+			{
+				continue;
+			}
+
+			Class<? extends Annotation> scope = this.getScopeFromAnnotation(presentType);
+
+			if (scope != null)
+			{
+				return scope;
+			}
+		}
+
+		return null;
+	}
+
+	private boolean isDirectScope(Class<? extends Annotation> annotation)
+	{
+		return annotation.isAnnotationPresent(Scope.class);
+	}
+
+	@Override
+	public ScopeBinding bindScope(Class<? extends Annotation> scope)
+	{
+		Objects.requireNonNull(scope);
+
+		if (!scope.isAnnotationPresent(Scope.class))
+		{
+			throw new AnnotationNotScopeException();
+		}
+
+		return new SimpleScopeBinding(scope);
+	}
+
+	@Override
 	public <T> Binding<T> bind(Class<T> request)
 	{
 		Objects.requireNonNull(request);
@@ -163,24 +235,49 @@ final class SimpleInjector implements Injector {
 		@Override
 		public void toSelf()
 		{
-			this.to(this.request);
+			this.toWithoutValidation(this.request);
 		}
 
 		@Override
 		public void to(Class<? extends T> provider)
 		{
+			Objects.requireNonNull(provider);
+			this.toWithoutValidation(provider);
+		}
+
+		private void toWithoutValidation(Class<? extends T> provider)
+		{
+			Class<? extends Annotation> scope = SimpleInjector.this.getScope(provider);
+			Function<Class<?>, ?> creator = SimpleInjector.this.scopes.get(scope);
 			Producer<T> producer = Producer.newInstance(this.request, () ->
 			{
-				try
-				{
-					return provider.newInstance();
-				}
-				catch (InstantiationException | IllegalAccessException e)
-				{
-					throw new RuntimeException(e);
-				}
+				@SuppressWarnings("unchecked")
+				T instance = (T) creator.apply(provider);
+				return instance;
 			});
 			SimpleInjector.this.service.register(producer);
+		}
+	}
+
+	final class SimpleScopeBinding implements ScopeBinding
+	{
+		SimpleScopeBinding(Class<? extends Annotation> scope)
+		{
+			this.scope = scope;
+		}
+
+		private final Class<? extends Annotation> scope;
+
+		@Override
+		public void to(Function<Class<?>, ?> instanceCreator)
+		{
+			this.putFunction(instanceCreator);
+		}
+
+		private void putFunction(Function<Class<?>, ?> function)
+		{
+			Objects.requireNonNull(function);
+			SimpleInjector.this.scopes.put(this.scope, function);
 		}
 	}
 

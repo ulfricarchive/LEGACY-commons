@@ -1,8 +1,7 @@
 package com.ulfric.commons.result;
 
+import java.util.Optional;
 import java.util.function.Consumer;
-
-import com.ulfric.commons.function.ValueMissingException;
 
 enum EmptyResult implements Result<Object> {
 
@@ -18,6 +17,12 @@ enum EmptyResult implements Result<Object> {
 	public Throwable thrown()
 	{
 		throw new ValueMissingException();
+	}
+
+	@Override
+	public Optional<Object> toOptional()
+	{
+		return Optional.empty();
 	}
 
 	@Override

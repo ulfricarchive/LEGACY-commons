@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.ulfric.commons.exception.Failure;
-import com.ulfric.commons.function.ValueMissingException;
 import com.ulfric.commons.reflect.MultiObject;
 import com.ulfric.commons.reflect.MultiType;
+import com.ulfric.commons.result.ValueMissingException;
 
 final class SimpleConversionService implements ConversionService {
 

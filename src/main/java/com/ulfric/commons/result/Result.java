@@ -1,6 +1,7 @@
 package com.ulfric.commons.result;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
@@ -40,6 +41,8 @@ public interface Result<R> {
 	R value();
 
 	Throwable thrown();
+
+	Optional<R> toOptional();
 
 	boolean isSuccess();
 
