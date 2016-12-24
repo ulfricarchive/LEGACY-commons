@@ -22,38 +22,24 @@ final class SimpleInjector implements Injector {
 	{
 		this.service = ConversionService.newInstance();
 		this.scopes = new IdentityHashMap<>();
-		this.sharedInstances = new InstancePool();
+		this.instanceFactory = new SimpleInstanceFactory(this);
 
-		this.bindScope(Default.class).to(InstanceMaker::forceCreate);
-		this.bindScope(Shared.class).to(this.sharedInstances::getOrCreate);
+		this.bindScope(Default.class).to(this.instanceFactory::createInstance);
+		this.bindScope(Shared.class).to(this.instanceFactory::getOrCreateInstance);
 	}
 
 	final Set<Class<?>> bindings = Collections.newSetFromMap(new IdentityHashMap<>());
 	final ConversionService service;
 	final Map<Class<? extends Annotation>, Function<Class<?>, ?>> scopes;
-	final InstancePool sharedInstances;
+	final InstanceFactory instanceFactory;
 
 	@Override
 	public <T> T create(Class<T> request)
 	{
 		Objects.requireNonNull(request);
 
-		Result<T> createdResult = this.tryCreate(request);
-		createdResult.ifFailure(Failure::raise);
-		return createdResult.value();
-	}
-
-	private <T> Result<T> tryCreate(Class<T> request)
-	{
 		this.ensureBinding(request);
-		Result<T> createdResult = this.tryProduce(request);
-
-		if (createdResult.isFailure())
-		{
-			createdResult = InstanceMaker.createInstance(request);
-		}
-
-		return createdResult;
+		return this.produce(request);
 	}
 
 	private void ensureBinding(Class<?> request)
@@ -64,18 +50,6 @@ final class SimpleInjector implements Injector {
 		}
 
 		this.bind(request).toSelf();
-	}
-
-	private <T> Result<T> tryProduce(Class<T> request)
-	{
-		try
-		{
-			return Result.of(this.produce(request));
-		}
-		catch (Failure failure)
-		{
-			return Result.ofThrown(failure);
-		}
 	}
 
 	private <T> T produce(Class<T> request)
@@ -114,25 +88,38 @@ final class SimpleInjector implements Injector {
 
 	private void injectField(Object owner, Field field)
 	{
+		Result<?> created = this.tryProduce(field.getType());
+
+		if (created.isFailure() && !this.isPopulated(owner, field))
+		{
+			Failure.raise(created.thrown());
+		}
+
+		this.setField(owner, field, created.value());
+	}
+
+	private <T> Result<T> tryProduce(Class<T> request)
+	{
 		try
 		{
-			Result<?> created = this.tryCreate(field.getType());
+			return Result.of(this.produce(request));
+		}
+		catch (Failure failure)
+		{
+			return Result.ofThrown(failure);
+		}
+	}
 
-			if (created.isFailure())
-			{
-				if (field.get(owner) != null)
-				{
-					return;
-				}
-
-				Failure.raise(created.thrown());
-			}
-
-			field.set(owner, created.value());
+	private boolean isPopulated(Object owner, Field field)
+	{
+		try
+		{
+			return field.get(owner) != null;
 		}
 		catch (IllegalArgumentException | IllegalAccessException e)
 		{
-			throw new RuntimeException(e);
+			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -199,7 +186,34 @@ final class SimpleInjector implements Injector {
 		@Override
 		public void toSelf()
 		{
+			BindTo binding = this.request.getAnnotation(BindTo.class);
+
+			if (binding != null)
+			{
+				this.bindToAnnotation(binding);
+				return;
+			}
+
 			this.toWithoutValidation(this.request);
+		}
+
+		private void bindToAnnotation(BindTo binding)
+		{
+			Class<?> bound = binding.value();
+			this.validateBinding(bound);
+			@SuppressWarnings("unchecked")
+			Class<? extends T> casted = (Class<? extends T>) bound;
+			this.to(casted);
+		}
+
+		private void validateBinding(Class<?> binding)
+		{
+			if (this.request.isAssignableFrom(binding))
+			{
+				return;
+			}
+
+			throw new IllegalBindToException();
 		}
 
 		@Override

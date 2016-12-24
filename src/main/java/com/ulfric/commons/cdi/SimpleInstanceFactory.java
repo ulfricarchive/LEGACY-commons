@@ -3,29 +3,45 @@ package com.ulfric.commons.cdi;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import com.ulfric.commons.api.UtilInstantiationException;
 import com.ulfric.commons.reflect.proxy.ProxyUtils;
 import com.ulfric.commons.result.Result;
 
-final class InstanceMaker {
+final class SimpleInstanceFactory implements InstanceFactory {
 
-	public static <T> T forceCreate(Class<T> request)
+	SimpleInstanceFactory(Injector injector)
 	{
-		return InstanceMaker.createInstance(request).value();
+		this.injector = injector;
 	}
 
-	public static <T> Result<T> createInstance(Class<T> request)
+	private final Injector injector;
+	private final InstancePool pool = new InstancePool(this);
+
+	@Override
+	public <T> T getOrCreateInstance(Class<T> request)
+	{
+		return this.pool.getOrCreate(request);
+	}
+
+	@Override
+	public <T> T createInstance(Class<T> request)
+	{
+		return this.tryToCreateInstance(request).value();
+	}
+
+	@Override
+	public <T> Result<T> tryToCreateInstance(Class<T> request)
 	{
 		if (request.isInterface())
 		{
-			T instance = InstanceMaker.createInstanceFromInterface(request);
+			T instance = this.createInstanceFromInterface(request);
 			return Result.of(instance);
 		}
 
-		Result<T> instance = InstanceMaker.createInstanceFromDefaultConstructor(request);
+		Result<T> instance = this.createInstanceFromDefaultConstructor(request);
 
 		if (instance.isSuccess())
 		{
+			this.injector.injectValues(instance.value());
 			return instance;
 		}
 
@@ -34,12 +50,12 @@ final class InstanceMaker {
 		return Result.empty();
 	}
 
-	private static <T> T createInstanceFromInterface(Class<T> request)
+	private <T> T createInstanceFromInterface(Class<T> request)
 	{
 		return ProxyUtils.newDeadProxy(request);
 	}
 
-	private static <T> Result<T> createInstanceFromDefaultConstructor(Class<T> request)
+	private <T> Result<T> createInstanceFromDefaultConstructor(Class<T> request)
 	{
 		try
 		{
@@ -54,11 +70,6 @@ final class InstanceMaker {
 		{
 			return Result.ofThrown(e);
 		}
-	}
-
-	private InstanceMaker()
-	{
-		throw new UtilInstantiationException();
 	}
 
 }
