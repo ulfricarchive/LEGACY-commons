@@ -21,6 +21,11 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 
 	private static final Map<Class<?>, MultiType> CACHED_SINGLE_TYPES = new IdentityHashMap<>();
 
+	static MultiType empty()
+	{
+		return MultiTypeEmpty.INSTANCE;
+	}
+
 	static MultiType object()
 	{
 		return MultiType.of(Object.class);
@@ -77,6 +82,55 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 
 	@Override
 	public abstract String toString();
+
+	private static final class MultiTypeEmpty extends MultiType
+	{
+		static final MultiTypeEmpty INSTANCE = new MultiTypeEmpty();
+
+		private MultiTypeEmpty() { }
+
+		@Override
+		public Iterator<Class<?>> iterator()
+		{
+			return Collections.emptyIterator();
+		}
+
+		@Override
+		public boolean isInstance(Object value)
+		{
+			return false;
+		}
+
+		@Override
+		public boolean isAssignableFrom(MultiType type)
+		{
+			return this.equals(type);
+		}
+
+		@Override
+		public Set<Class<?>> getCommonTypes()
+		{
+			return Collections.emptySet();
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return 0;
+		}
+
+		@Override
+		public boolean equals(Object object)
+		{
+			return object == this;
+		}
+
+		@Override
+		public String toString()
+		{
+			return void.class.getSimpleName();
+		}
+	}
 
 	private static final class MultiTypeOne extends MultiType
 	{

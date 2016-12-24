@@ -108,6 +108,14 @@ class ConversionServiceTest {
 		Verify.that(this.service.convert(new Object()).to(NavigableMap.class, SortedMap.class)).isExactType(TreeMap.class);
 	}
 
+	@Test
+	void testProducer()
+	{
+		this.registerIntegerProducer();
+
+		Verify.that(this.service.produce().to(Integer.class)).isEqualTo(Integer.MAX_VALUE);
+	}
+
 	private void registerObjectToStringUmbrealla()
 	{
 		this.service.register(new Converter<String>(MultiType.of(Object.class))
@@ -116,6 +124,18 @@ class ConversionServiceTest {
 			public String apply(MultiObject from)
 			{
 				return from.toString();
+			}
+		});
+	}
+
+	private void registerIntegerProducer()
+	{
+		this.service.register(new Producer<Integer>()
+		{
+			@Override
+			public Integer get()
+			{
+				return Integer.MAX_VALUE;
 			}
 		});
 	}

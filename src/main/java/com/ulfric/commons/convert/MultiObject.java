@@ -8,6 +8,11 @@ import java.util.Optional;
 
 abstract class MultiObject {
 
+	static MultiObject empty()
+	{
+		return MultiObjectEmpty.INSTANCE;
+	}
+
 	static MultiObject of(Object object)
 	{
 		Objects.requireNonNull(object);
@@ -36,6 +41,45 @@ abstract class MultiObject {
 
 	@Override
 	public abstract String toString();
+
+	static final class MultiObjectEmpty extends MultiObject
+	{
+		static final MultiObjectEmpty INSTANCE = new MultiObjectEmpty();
+
+		private MultiObjectEmpty() { }
+
+		private final Optional<?> optionalOfThis = Optional.of(this);
+
+		@Override
+		public MultiType toType()
+		{
+			return MultiType.empty();
+		}
+
+		@Override
+		public Optional<?> firstMatch(MultiType type)
+		{
+			return type == MultiType.empty() ? this.optionalOfThis : Optional.empty();
+		}
+
+		@Override
+		public boolean equals(Object object)
+		{
+			return object == this;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return 0;
+		}
+
+		@Override
+		public String toString()
+		{
+			return "";
+		}
+	}
 
 	static final class MultiObjectSingle extends MultiObject
 	{

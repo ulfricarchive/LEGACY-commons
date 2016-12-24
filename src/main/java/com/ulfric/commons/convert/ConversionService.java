@@ -18,6 +18,12 @@ public final class ConversionService {
 
 	final Map<MultiType, Map<MultiType, Converter<?>>> converters = new HashMap<>();
 	final Map<MultiType, Map<MultiType, Converter<?>>> resolved = new HashMap<>();
+	private final Conversion producer = new Conversion(MultiObject.empty());
+
+	public Conversion produce()
+	{
+		return this.producer;
+	}
 
 	public Conversion convert(Object from)
 	{
