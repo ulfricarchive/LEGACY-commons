@@ -156,51 +156,22 @@ final class SimpleInjector implements Injector {
 	}
 
 	@Override
-	public Class<? extends Annotation> getScope(Class<?> producer)
+	public Annotation getScope(Class<?> producer)
 	{
 		for (Annotation annotation : producer.getAnnotations())
 		{
-			Class<? extends Annotation> scope = this.getScopeFromAnnotation(annotation.annotationType());
-
-			if (scope != null)
+			if (this.isScope(annotation))
 			{
-				return scope;
+				return annotation;
 			}
 		}
 
-		return Default.class;
+		return DefaultScope.INSTANCE;
 	}
 
-	private Class<? extends Annotation> getScopeFromAnnotation(Class<? extends Annotation> annotation)
+	private boolean isScope(Annotation annotation)
 	{
-		if (this.isDirectScope(annotation))
-		{
-			return annotation;
-		}
-
-		for (Annotation present : annotation.getAnnotations())
-		{
-			Class<? extends Annotation> presentType = present.annotationType();
-
-			if (presentType == annotation)
-			{
-				continue;
-			}
-
-			Class<? extends Annotation> scope = this.getScopeFromAnnotation(presentType);
-
-			if (scope != null)
-			{
-				return scope;
-			}
-		}
-
-		return null;
-	}
-
-	private boolean isDirectScope(Class<? extends Annotation> annotation)
-	{
-		return annotation.isAnnotationPresent(Scope.class);
+		return this.scopes.containsKey(annotation.annotationType());
 	}
 
 	@Override
@@ -247,8 +218,8 @@ final class SimpleInjector implements Injector {
 
 		private void toWithoutValidation(Class<? extends T> provider)
 		{
-			Class<? extends Annotation> scope = SimpleInjector.this.getScope(provider);
-			Function<Class<?>, ?> creator = SimpleInjector.this.scopes.get(scope);
+			Annotation scope = SimpleInjector.this.getScope(provider);
+			Function<Class<?>, ?> creator = SimpleInjector.this.scopes.get(scope.annotationType());
 			Producer<T> producer = Producer.newInstance(this.request, () ->
 			{
 				@SuppressWarnings("unchecked")

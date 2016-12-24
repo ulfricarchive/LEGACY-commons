@@ -17,6 +17,6 @@ public interface Injector {
 
 	ScopeBinding bindScope(Class<? extends Annotation> scope);
 
-	Class<? extends Annotation> getScope(Class<?> provider);
+	Annotation getScope(Class<?> provider);
 
 }
