@@ -1,6 +1,10 @@
 package com.ulfric.commons.convert;
 
+import java.util.Optional;
+
 import com.ulfric.commons.exception.Failure;
+import com.ulfric.commons.reflect.MultiObject;
+import com.ulfric.commons.reflect.MultiType;
 
 public abstract class SingleConverter<T, R> extends Converter<R> {
 
@@ -17,12 +21,13 @@ public abstract class SingleConverter<T, R> extends Converter<R> {
 	@Override
 	public final R apply(MultiObject from)
 	{
-		if (from instanceof MultiObject.MultiObjectSingle)
+		Optional<?> firstMatch = from.firstMatch(this.getFrom());
+
+		if (firstMatch.isPresent())
 		{
-			MultiObject.MultiObjectSingle fromSingle = (MultiObject.MultiObjectSingle) from;
 			@SuppressWarnings("unchecked")
-			T fromValue = (T) fromSingle.value;
-			return this.convert(fromValue);
+			T get = (T) firstMatch.get();
+			return this.convert(get);
 		}
 
 		return Failure.raise(ConversionException.class);

@@ -1,4 +1,4 @@
-package com.ulfric.commons.convert;
+package com.ulfric.commons.reflect;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -15,29 +15,28 @@ import java.util.StringJoiner;
 import com.ulfric.commons.collect.CollectionUtils;
 import com.ulfric.commons.collect.ImmutableIterator;
 import com.ulfric.commons.collect.SingletonIterator;
-import com.ulfric.commons.reflect.ClassUtils;
 
 public abstract class MultiType implements Type, Iterable<Class<?>> {
 
 	private static final Map<Class<?>, MultiType> CACHED_SINGLE_TYPES = new IdentityHashMap<>();
 
-	static MultiType empty()
+	public static MultiType empty()
 	{
 		return MultiTypeEmpty.INSTANCE;
 	}
 
-	static MultiType object()
+	public static MultiType object()
 	{
 		return MultiType.of(Object.class);
 	}
 
-	static MultiType of(Class<?> type)
+	public static MultiType of(Class<?> type)
 	{
 		Class<?> boxed = ClassUtils.box(type);
 		return MultiType.CACHED_SINGLE_TYPES.computeIfAbsent(boxed, MultiTypeOne::new);
 	}
 
-	static MultiType of(Class<?>... types)
+	public static MultiType of(Class<?>... types)
 	{
 		int length = types.length;
 		if (length == 1)
@@ -53,7 +52,7 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 		return new MultiTypeMany(Arrays.asList(typesClone));
 	}
 
-	static MultiType of(Collection<Class<?>> types)
+	public static MultiType of(Collection<Class<?>> types)
 	{
 		if (types.size() == 1)
 		{
@@ -63,7 +62,7 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 		return new MultiTypeMany(new ArrayList<>(types));
 	}
 
-	static MultiType of(Iterable<Class<?>> types)
+	public static MultiType of(Iterable<Class<?>> types)
 	{
 		return new MultiTypeMany(CollectionUtils.copyToList(types));
 	}

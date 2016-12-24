@@ -6,6 +6,10 @@ import java.util.function.Function;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.ulfric.commons.reflect.MultiObject;
+import com.ulfric.commons.reflect.MultiType;
+import com.ulfric.commons.reflect.TypeBridge;
+
 public abstract class Converter<R> implements Function<MultiObject, R> {
 
 	public static <T, R> Converter<R> single(Class<T> from, Class<R> to, Function<T, R> function)

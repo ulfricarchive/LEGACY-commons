@@ -2,6 +2,9 @@ package com.ulfric.commons.convert;
 
 import java.util.function.Supplier;
 
+import com.ulfric.commons.reflect.MultiObject;
+import com.ulfric.commons.reflect.MultiType;
+
 public abstract class Producer<R> extends Converter<R> implements Supplier<R> {
 
 	public static <R> Producer<R> newInstance(Class<R> to, Supplier<? extends R> supplier)

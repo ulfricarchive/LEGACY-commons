@@ -1,4 +1,4 @@
-package com.ulfric.commons.convert;
+package com.ulfric.commons.reflect;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

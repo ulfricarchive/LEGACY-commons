@@ -1,25 +1,26 @@
-package com.ulfric.commons.convert;
+package com.ulfric.commons.reflect;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
-abstract class MultiObject {
+public abstract class MultiObject {
 
-	static MultiObject empty()
+	public static MultiObject empty()
 	{
 		return MultiObjectEmpty.INSTANCE;
 	}
 
-	static MultiObject of(Object object)
+	public static MultiObject of(Object object)
 	{
 		Objects.requireNonNull(object);
 		return new MultiObjectSingle(object);
 	}
 
-	static MultiObject of(Object... objects)
+	public static MultiObject of(Object... objects)
 	{
 		Objects.requireNonNull(objects);
 		for (Object object : objects)
@@ -48,8 +49,6 @@ abstract class MultiObject {
 
 		private MultiObjectEmpty() { }
 
-		private final Optional<?> optionalOfThis = Optional.of(this);
-
 		@Override
 		public MultiType toType()
 		{
@@ -59,7 +58,7 @@ abstract class MultiObject {
 		@Override
 		public Optional<?> firstMatch(MultiType type)
 		{
-			return type == MultiType.empty() ? this.optionalOfThis : Optional.empty();
+			return Optional.empty();
 		}
 
 		@Override
@@ -88,7 +87,7 @@ abstract class MultiObject {
 			this.value = value;
 		}
 
-		final Object value;
+		private final Object value;
 		private MultiType type;
 
 		@Override
@@ -147,12 +146,12 @@ abstract class MultiObject {
 
 	static final class MultiObjectMany extends MultiObject
 	{
-		MultiObjectMany(Iterable<?> values)
+		MultiObjectMany(Collection<?> values)
 		{
 			this.values = values;
 		}
 
-		private final Iterable<?> values;
+		private final Collection<?> values;
 		private MultiType type;
 
 		@Override
@@ -163,7 +162,7 @@ abstract class MultiObject {
 				return this.type;
 			}
 
-			List<Class<?>> classes = new ArrayList<>();
+			Set<Class<?>> classes = new HashSet<>();
 			for (Object value : this.values)
 			{
 				classes.add(value.getClass());

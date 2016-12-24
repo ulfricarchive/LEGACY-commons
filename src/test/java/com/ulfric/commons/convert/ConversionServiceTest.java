@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import com.ulfric.commons.reflect.MultiObject;
+import com.ulfric.commons.reflect.MultiType;
 import com.ulfric.verify.Verify;
 
 @DisplayName("Conversion Service")
