@@ -3,7 +3,7 @@ package com.ulfric.commons.exception;
 import java.util.concurrent.Callable;
 
 import com.ulfric.commons.api.UtilInstantiationException;
-import com.ulfric.commons.function.Result;
+import com.ulfric.commons.result.Result;
 
 public class CallableUtils {
 

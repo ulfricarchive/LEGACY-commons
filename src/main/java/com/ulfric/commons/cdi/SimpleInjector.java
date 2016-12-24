@@ -3,7 +3,6 @@ package com.ulfric.commons.cdi;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -11,7 +10,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import com.ulfric.commons.convert.ConversionService;
 import com.ulfric.commons.convert.Producer;
 import com.ulfric.commons.exception.Failure;
-import com.ulfric.commons.function.Result;
+import com.ulfric.commons.result.Result;
 
 final class SimpleInjector implements Injector {
 
@@ -25,11 +24,10 @@ final class SimpleInjector implements Injector {
 	@Override
 	public <T> T create(Class<T> request)
 	{
+		Objects.requireNonNull(request);
+
 		Result<T> createdResult = this.tryCreate(request);
-
-		// TODO
 		createdResult.ifFailure(Failure::raise);
-
 		return createdResult.value();
 	}
 
@@ -39,74 +37,93 @@ final class SimpleInjector implements Injector {
 		createdResult.ifSuccess(this::injectValues);
 		if (createdResult.isFailure())
 		{
-			try
-			{
-				Constructor<T> defaultConstructor = request.getDeclaredConstructor();
-				defaultConstructor.setAccessible(true);
-				T created = defaultConstructor.newInstance();
-				this.injectValues(created);
-				return Result.of(created);
-			}
-			catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-					IllegalArgumentException | InvocationTargetException exception)
-			{
-				exception.printStackTrace();
-				return createdResult;
-			}
+			return this.tryCreateFromConstructor(request);
 		}
 
 		return createdResult;
 	}
 
+	private <T> Result<T> tryCreateFromConstructor(Class<T> request)
+	{
+		try
+		{
+			Constructor<T> defaultConstructor = request.getDeclaredConstructor();
+			defaultConstructor.setAccessible(true);
+			T created = defaultConstructor.newInstance();
+			this.injectValues(created);
+			return Result.of(created);
+		}
+		catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+				IllegalArgumentException | InvocationTargetException exception)
+		{
+			Result.ofThrown(exception);
+		}
+
+		return Result.empty();
+	}
+
 	@Override
 	public void injectValues(Object object)
 	{
+		Objects.requireNonNull(object);
+
 		Class<?> parentType = object.getClass();
-		List<Field> fields = FieldUtils.getAllFieldsList(parentType);
-		for (Field field : fields)
+		FieldUtils.getAllFieldsList(parentType)
+			.stream()
+			.filter(this::isInjectable)
+			.forEach(field ->
+			{
+				field.setAccessible(true);
+
+				Class<?> type = field.getType();
+				if (type == parentType)
+				{
+					this.setField(object, field, object);
+					return;
+				}
+
+				this.injectField(object, field);
+			});
+	}
+
+	private boolean isInjectable(Field field)
+	{
+		return field.isAnnotationPresent(Inject.class);
+	}
+
+	private void injectField(Object owner, Field field)
+	{
+		try
 		{
-			if (!field.isAnnotationPresent(Inject.class))
-			{
-				continue;
-			}
+			Result<?> created = this.tryCreate(field.getType());
 
-			field.setAccessible(true);
-
-			Class<?> type = field.getType();
-			if (type == parentType)
+			if (created.isFailure())
 			{
-				try
+				if (field.get(owner) != null)
 				{
-					field.set(object, object);
-				}
-				catch (IllegalArgumentException | IllegalAccessException e)
-				{
-					throw new RuntimeException(e);
+					return;
 				}
 
-				continue;
+				Failure.raise(created.thrown());
 			}
 
-			try
-			{
-				Result<?> created = this.tryCreate(field.getType());
+			field.set(owner, created.value());
+		}
+		catch (IllegalArgumentException | IllegalAccessException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
 
-				if (created.isFailure())
-				{
-					if (field.get(object) != null)
-					{
-						continue;
-					}
-
-					Failure.raise(created.thrown());
-				}
-
-				field.set(object, created.value());
-			}
-			catch (IllegalArgumentException | IllegalAccessException e)
-			{
-				throw new RuntimeException(e);
-			}
+	private void setField(Object owner, Field field, Object value)
+	{
+		try
+		{
+			field.set(owner, value);
+		}
+		catch (IllegalArgumentException | IllegalAccessException e)
+		{
+			throw new RuntimeException(e);
 		}
 	}
 
