@@ -1,7 +1,8 @@
-package com.ulfric.commons.convert;
+package com.ulfric.commons.convert.converter;
 
 import java.util.Optional;
 
+import com.ulfric.commons.convert.ConversionException;
 import com.ulfric.commons.exception.Failure;
 import com.ulfric.commons.reflect.MultiObject;
 import com.ulfric.commons.reflect.MultiType;

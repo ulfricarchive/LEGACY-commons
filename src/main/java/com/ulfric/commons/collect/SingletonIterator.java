@@ -11,7 +11,7 @@ public final class SingletonIterator<T> implements Iterator<T> {
 	}
 
 	private final T value;
-	private boolean hasNext;
+	private boolean hasNext = true;
 
 	@Override
 	public boolean hasNext()
@@ -27,7 +27,7 @@ public final class SingletonIterator<T> implements Iterator<T> {
 			throw new NoSuchElementException();
 		}
 
-		this.hasNext = true;
+		this.hasNext = false;
 
 		return this.value;
 	}

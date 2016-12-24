@@ -2,38 +2,36 @@ package com.ulfric.commons.cdi;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
 
 import com.ulfric.commons.api.UtilInstantiationException;
 import com.ulfric.commons.reflect.proxy.ProxyUtils;
 import com.ulfric.commons.result.Result;
-import com.ulfric.commons.result.ValueMissingException;
 
 final class InstanceMaker {
 
 	public static <T> T forceCreate(Class<T> request)
 	{
-		return InstanceMaker.createInstance(request).orElseThrow(ValueMissingException::new);
+		return InstanceMaker.createInstance(request).value();
 	}
 
-	public static <T> Optional<T> createInstance(Class<T> request)
+	public static <T> Result<T> createInstance(Class<T> request)
 	{
 		if (request.isInterface())
 		{
 			T instance = InstanceMaker.createInstanceFromInterface(request);
-			return Optional.ofNullable(instance);
+			return Result.of(instance);
 		}
 
 		Result<T> instance = InstanceMaker.createInstanceFromDefaultConstructor(request);
 
 		if (instance.isSuccess())
 		{
-			return instance.toOptional();
+			return instance;
 		}
 
 		// TODO unsafe instance making
 
-		return Optional.empty();
+		return Result.empty();
 	}
 
 	private static <T> T createInstanceFromInterface(Class<T> request)

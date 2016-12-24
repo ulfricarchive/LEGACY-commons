@@ -1,18 +1,18 @@
 package com.ulfric.commons.cdi;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import com.ulfric.commons.convert.ConversionService;
-import com.ulfric.commons.convert.Producer;
+import com.ulfric.commons.convert.converter.Producer;
 import com.ulfric.commons.exception.Failure;
 import com.ulfric.commons.result.Result;
 
@@ -28,6 +28,7 @@ final class SimpleInjector implements Injector {
 		this.bindScope(Shared.class).to(this.sharedInstances::getOrCreate);
 	}
 
+	final Set<Class<?>> bindings = Collections.newSetFromMap(new IdentityHashMap<>());
 	final ConversionService service;
 	final Map<Class<? extends Annotation>, Function<Class<?>, ?>> scopes;
 	final InstancePool sharedInstances;
@@ -44,33 +45,42 @@ final class SimpleInjector implements Injector {
 
 	private <T> Result<T> tryCreate(Class<T> request)
 	{
-		Result<T> createdResult = this.tryRequest(request);
-		createdResult.ifSuccess(this::injectValues);
+		this.ensureBinding(request);
+		Result<T> createdResult = this.tryProduce(request);
+
 		if (createdResult.isFailure())
 		{
-			return this.tryCreateFromConstructor(request);
+			createdResult = InstanceMaker.createInstance(request);
 		}
 
 		return createdResult;
 	}
 
-	private <T> Result<T> tryCreateFromConstructor(Class<T> request)
+	private void ensureBinding(Class<?> request)
+	{
+		if (this.bindings.contains(request))
+		{
+			return;
+		}
+
+		this.bind(request).toSelf();
+	}
+
+	private <T> Result<T> tryProduce(Class<T> request)
 	{
 		try
 		{
-			Constructor<T> defaultConstructor = request.getDeclaredConstructor();
-			defaultConstructor.setAccessible(true);
-			T created = defaultConstructor.newInstance();
-			this.injectValues(created);
-			return Result.of(created);
+			return Result.of(this.produce(request));
 		}
-		catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-				IllegalArgumentException | InvocationTargetException exception)
+		catch (Failure failure)
 		{
-			Result.ofThrown(exception);
+			return Result.ofThrown(failure);
 		}
+	}
 
-		return Result.empty();
+	private <T> T produce(Class<T> request)
+	{
+		return this.service.produce(request);
 	}
 
 	@Override
@@ -136,23 +146,6 @@ final class SimpleInjector implements Injector {
 		{
 			throw new RuntimeException(e);
 		}
-	}
-
-	private <T> Result<T> tryRequest(Class<T> request)
-	{
-		try
-		{
-			return Result.of(this.request(request));
-		}
-		catch (Failure failure)
-		{
-			return Result.ofThrown(failure);
-		}
-	}
-
-	private <T> T request(Class<T> request)
-	{
-		return this.service.produce().to(request);
 	}
 
 	@Override
@@ -227,6 +220,7 @@ final class SimpleInjector implements Injector {
 				return instance;
 			});
 			SimpleInjector.this.service.register(producer);
+			SimpleInjector.this.bindings.add(provider);
 		}
 	}
 

@@ -1,5 +1,7 @@
 package com.ulfric.commons.convert;
 
+import com.ulfric.commons.convert.converter.Converter;
+
 public interface ConversionService {
 
 	public static ConversionService newInstance()
@@ -7,7 +9,9 @@ public interface ConversionService {
 		return new SimpleConversionService();
 	}
 
-	Conversion produce();
+	<T> T produce(Class<T> to);
+
+	Object produce(Class<?>... to);
 
 	Conversion convert(Object from);
 

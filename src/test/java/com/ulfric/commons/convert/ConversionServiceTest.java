@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import com.ulfric.commons.convert.converter.Converter;
+import com.ulfric.commons.convert.converter.Producer;
 import com.ulfric.commons.reflect.MultiObject;
 import com.ulfric.commons.reflect.MultiType;
 import com.ulfric.verify.Verify;
@@ -98,7 +100,7 @@ class ConversionServiceTest {
 	@Test
 	void testMultiType()
 	{
-		this.service.register(new Converter<Object>(MultiType.object(), MultiType.of(NavigableMap.class, SortedMap.class)) {
+		this.service.register(new Converter<Object>(MultiType.of(Object.class), MultiType.of(NavigableMap.class, SortedMap.class)) {
 			@Override
 			public Object apply(MultiObject from)
 			{
@@ -115,7 +117,7 @@ class ConversionServiceTest {
 	{
 		this.registerIntegerProducer();
 
-		Verify.that(this.service.produce().to(Integer.class)).isEqualTo(Integer.MAX_VALUE);
+		Verify.that(this.service.produce(Integer.class)).isEqualTo(Integer.MAX_VALUE);
 	}
 
 	private void registerObjectToStringUmbrealla()

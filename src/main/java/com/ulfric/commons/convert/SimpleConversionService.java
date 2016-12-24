@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.ulfric.commons.convert.converter.Converter;
 import com.ulfric.commons.exception.Failure;
 import com.ulfric.commons.reflect.MultiObject;
 import com.ulfric.commons.reflect.MultiType;
@@ -18,9 +19,15 @@ final class SimpleConversionService implements ConversionService {
 	private final Conversion producer = new SimpleConversion(MultiObject.empty());
 
 	@Override
-	public Conversion produce()
+	public <T> T produce(Class<T> to)
 	{
-		return this.producer;
+		return this.producer.to(to);
+	}
+
+	@Override
+	public Object produce(Class<?>... to)
+	{
+		return this.producer.to(to);
 	}
 
 	@Override

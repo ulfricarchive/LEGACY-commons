@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import com.ulfric.commons.collect.CollectionUtils;
 import com.ulfric.commons.collect.ImmutableIterator;
 import com.ulfric.commons.collect.SingletonIterator;
 
@@ -23,11 +22,6 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 	public static MultiType empty()
 	{
 		return MultiTypeEmpty.INSTANCE;
-	}
-
-	public static MultiType object()
-	{
-		return MultiType.of(Object.class);
 	}
 
 	public static MultiType of(Class<?> type)
@@ -60,11 +54,6 @@ public abstract class MultiType implements Type, Iterable<Class<?>> {
 		}
 
 		return new MultiTypeMany(new ArrayList<>(types));
-	}
-
-	public static MultiType of(Iterable<Class<?>> types)
-	{
-		return new MultiTypeMany(CollectionUtils.copyToList(types));
 	}
 
 	public abstract boolean isInstance(Object value);

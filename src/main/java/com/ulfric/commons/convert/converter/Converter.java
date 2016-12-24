@@ -1,4 +1,4 @@
-package com.ulfric.commons.convert;
+package com.ulfric.commons.convert.converter;
 
 import java.util.Objects;
 import java.util.function.Function;

@@ -52,9 +52,9 @@ public abstract class TypeBridge {
 	}
 
 	private final Class<?> resolve;
-	private Iterable<Class<?>> result;
+	private Set<Class<?>> result;
 
-	public Iterable<Class<?>> getTypes()
+	public Set<Class<?>> getTypes()
 	{
 		if (this.result != null)
 		{
