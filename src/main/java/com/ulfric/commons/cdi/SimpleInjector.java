@@ -36,7 +36,7 @@ final class SimpleInjector implements Injector {
 	private <T> Result<T> tryCreate(Class<T> request)
 	{
 		Result<T> createdResult = this.tryRequest(request);
-		createdResult.ifSuccess(this::performInjection);
+		createdResult.ifSuccess(this::injectValues);
 		if (createdResult.isFailure())
 		{
 			try
@@ -44,7 +44,7 @@ final class SimpleInjector implements Injector {
 				Constructor<T> defaultConstructor = request.getDeclaredConstructor();
 				defaultConstructor.setAccessible(true);
 				T created = defaultConstructor.newInstance();
-				this.performInjection(created);
+				this.injectValues(created);
 				return Result.of(created);
 			}
 			catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
@@ -58,7 +58,8 @@ final class SimpleInjector implements Injector {
 		return createdResult;
 	}
 
-	private void performInjection(Object object)
+	@Override
+	public void injectValues(Object object)
 	{
 		Class<?> parentType = object.getClass();
 		List<Field> fields = FieldUtils.getAllFieldsList(parentType);

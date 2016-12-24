@@ -9,6 +9,8 @@ public interface Injector {
 
 	<T> T create(Class<T> request);
 
+	void injectValues(Object object);
+
 	<T> Binding<T> bind(Class<T> request);
 
 }
