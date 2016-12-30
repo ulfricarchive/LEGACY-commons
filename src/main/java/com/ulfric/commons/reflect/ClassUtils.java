@@ -1,5 +1,6 @@
 package com.ulfric.commons.reflect;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
@@ -146,6 +147,12 @@ public class ClassUtils {
 		while (!nextLayer.isEmpty());
 
 		return classes;
+	}
+
+	public static boolean isAbstract(Class<?> clazz)
+	{
+		Objects.requireNonNull(clazz);
+		return Modifier.isAbstract(clazz.getModifiers());
 	}
 
 	private ClassUtils()
