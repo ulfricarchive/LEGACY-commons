@@ -14,7 +14,7 @@ public class AnnotationUtils {
 		Objects.requireNonNull(holder);
 		Objects.requireNonNull(seed);
 
-		return new AnnotationLookup<>(holder, seed).getLeaf();
+		return new AnnotationLookup<>(seed).getLeaf(holder);
 	}
 
 	public static <T extends Annotation> T getRootAnnotation(Class<?> holder, Class<T> seed)
@@ -22,27 +22,25 @@ public class AnnotationUtils {
 		Objects.requireNonNull(holder);
 		Objects.requireNonNull(seed);
 
-		return new AnnotationLookup<>(holder, seed).getRoot();
+		return new AnnotationLookup<>(seed).getRoot(holder);
 	}
 
 	private static final class AnnotationLookup<T extends Annotation>
 	{
-		AnnotationLookup(Class<?> holder, Class<T> seed)
+		AnnotationLookup(Class<T> seed)
 		{
-			this.holder = holder;
 			this.seed = seed;
 			this.checked = SetUtils.newIdentityHashSet();
 		}
 
-		private final Class<?> holder;
 		private final Class<T> seed;
 		private final Set<Class<?>> checked;
 
-		public T getRoot()
+		public T getRoot(Class<?> holder)
 		{
 			Class<T> seed = this.seed;
 			Set<Class<?>> checked = this.checked;
-			for (Annotation annotation : this.holder.getAnnotations())
+			for (Annotation annotation : holder.getAnnotations())
 			{
 				Class<? extends Annotation> annotationType = annotation.annotationType();
 
@@ -58,7 +56,7 @@ public class AnnotationUtils {
 					return root;
 				}
 
-				T root = AnnotationUtils.getRootAnnotation(annotationType, seed);
+				T root = this.getRoot(annotationType);
 				if (root != null)
 				{
 					return root;
@@ -68,11 +66,11 @@ public class AnnotationUtils {
 			return null;
 		}
 
-		public Annotation getLeaf()
+		public Annotation getLeaf(Class<?> holder)
 		{
 			Class<T> seed = this.seed;
 			Set<Class<?>> checked = this.checked;
-			for (Annotation annotation : this.holder.getAnnotations())
+			for (Annotation annotation : holder.getAnnotations())
 			{
 				Class<? extends Annotation> annotationType = annotation.annotationType();
 
