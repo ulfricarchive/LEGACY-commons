@@ -1,6 +1,7 @@
 package com.ulfric.commons.reflect;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.util.Objects;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ import com.ulfric.commons.collect.SetUtils;
 
 public class AnnotationUtils {
 
-	public static Annotation getLeafAnnotation(Class<?> holder, Class<? extends Annotation> seed)
+	public static Annotation getLeafAnnotation(AnnotatedElement holder, Class<? extends Annotation> seed)
 	{
 		Objects.requireNonNull(holder);
 		Objects.requireNonNull(seed);
@@ -17,7 +18,7 @@ public class AnnotationUtils {
 		return new AnnotationLookup<>(seed).getLeaf(holder);
 	}
 
-	public static <T extends Annotation> T getRootAnnotation(Class<?> holder, Class<T> seed)
+	public static <T extends Annotation> T getRootAnnotation(AnnotatedElement holder, Class<T> seed)
 	{
 		Objects.requireNonNull(holder);
 		Objects.requireNonNull(seed);
@@ -36,7 +37,7 @@ public class AnnotationUtils {
 		private final Class<T> seed;
 		private final Set<Class<?>> checked;
 
-		public T getRoot(Class<?> holder)
+		public T getRoot(AnnotatedElement holder)
 		{
 			Class<T> seed = this.seed;
 			Set<Class<?>> checked = this.checked;
@@ -66,7 +67,7 @@ public class AnnotationUtils {
 			return null;
 		}
 
-		public Annotation getLeaf(Class<?> holder)
+		public Annotation getLeaf(AnnotatedElement holder)
 		{
 			Class<T> seed = this.seed;
 			Set<Class<?>> checked = this.checked;
