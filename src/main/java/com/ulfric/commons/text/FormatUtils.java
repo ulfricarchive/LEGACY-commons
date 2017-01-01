@@ -1,4 +1,4 @@
-package com.ulfric.commons.test;
+package com.ulfric.commons.text;
 
 import java.text.NumberFormat;
 
