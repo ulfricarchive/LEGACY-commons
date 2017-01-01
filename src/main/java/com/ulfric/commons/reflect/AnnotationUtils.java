@@ -2,6 +2,8 @@ package com.ulfric.commons.reflect;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -10,12 +12,12 @@ import com.ulfric.commons.collect.SetUtils;
 
 public class AnnotationUtils {
 
-	public static Annotation getLeafAnnotation(AnnotatedElement holder, Class<? extends Annotation> seed)
+	public static List<Annotation> getLeafAnnotations(AnnotatedElement holder, Class<? extends Annotation> seed)
 	{
 		Objects.requireNonNull(holder);
 		Objects.requireNonNull(seed);
 
-		return new AnnotationLookup<>(seed).getLeaf(holder);
+		return new AnnotationLookup<>(seed).getLeaves(holder);
 	}
 
 	public static <T extends Annotation> T getRootAnnotation(AnnotatedElement holder, Class<T> seed)
@@ -36,6 +38,7 @@ public class AnnotationUtils {
 
 		private final Class<T> seed;
 		private final Set<Class<?>> checked;
+		private final List<Annotation> results = new ArrayList<>();
 
 		public T getRoot(AnnotatedElement holder)
 		{
@@ -52,9 +55,8 @@ public class AnnotationUtils {
 
 				if (annotationType == seed)
 				{
-					@SuppressWarnings("unchecked")
-					T root = (T) annotation;
-					return root;
+					this.results.add(annotation);
+					continue;
 				}
 
 				T root = this.getRoot(annotationType);
@@ -67,7 +69,7 @@ public class AnnotationUtils {
 			return null;
 		}
 
-		public Annotation getLeaf(AnnotatedElement holder)
+		public List<Annotation> getLeaves(AnnotatedElement holder)
 		{
 			Class<T> seed = this.seed;
 			Set<Class<?>> checked = this.checked;
@@ -82,16 +84,13 @@ public class AnnotationUtils {
 
 				if (annotationType == seed)
 				{
-					return annotation;
+					this.results.add(annotation);
 				}
 
-				if (this.getLeaf(annotationType) != null)
-				{
-					return annotation;
-				}
+				this.getLeaves(annotationType);
 			}
 
-			return null;
+			return this.results;
 		}
 	}
 
