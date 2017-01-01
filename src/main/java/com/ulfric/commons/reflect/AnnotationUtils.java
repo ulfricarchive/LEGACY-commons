@@ -85,6 +85,13 @@ public class AnnotationUtils {
 				if (annotationType == seed)
 				{
 					this.results.add(annotation);
+					continue;
+				}
+
+				if (annotationType.isAnnotationPresent(seed))
+				{
+					this.results.add(annotation);
+					continue;
 				}
 
 				this.getLeaves(annotationType);
