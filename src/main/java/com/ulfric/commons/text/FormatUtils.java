@@ -11,6 +11,11 @@ public class FormatUtils {
 		return NumberFormat.getNumberInstance().format(value);
 	}
 
+	public static String formatMilliseconds(long value)
+	{
+		return FormatUtils.formatLong(Math.abs(value)) + "ms";
+	}
+
 	public FormatUtils()
 	{
 		throw new UtilInstantiationException();
