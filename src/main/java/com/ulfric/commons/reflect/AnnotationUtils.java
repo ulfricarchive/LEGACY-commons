@@ -84,7 +84,7 @@ public class AnnotationUtils {
 					return annotation;
 				}
 
-				if (AnnotationUtils.getLeafAnnotation(annotationType, seed) != null)
+				if (this.getLeaf(annotationType) != null)
 				{
 					return annotation;
 				}
