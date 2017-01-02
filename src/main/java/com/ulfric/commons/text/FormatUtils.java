@@ -16,7 +16,7 @@ public class FormatUtils {
 		return FormatUtils.formatLong(Math.abs(value)) + "ms";
 	}
 
-	public FormatUtils()
+	private FormatUtils()
 	{
 		throw new UtilInstantiationException();
 	}

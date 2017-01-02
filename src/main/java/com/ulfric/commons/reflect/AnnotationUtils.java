@@ -55,8 +55,9 @@ public class AnnotationUtils {
 
 				if (annotationType == seed)
 				{
-					this.results.add(annotation);
-					continue;
+					@SuppressWarnings("unchecked")
+					T root = (T) annotation;
+					return root;
 				}
 
 				T root = this.getRoot(annotationType);
