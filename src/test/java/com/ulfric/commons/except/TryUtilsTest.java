@@ -20,7 +20,8 @@ public final class TryUtilsTest extends UtilTestBase {
 	{
 		try
 		{
-			SNEAKY_EXCEPTION = (Class<? extends Exception>) Class.forName("com.ulfric.commons.except.TryUtils$SneakyException");
+			SNEAKY_EXCEPTION = (Class<? extends Exception>)
+					Class.forName("com.ulfric.commons.except.TryUtils$SneakyException");
 		}
 		catch (ClassNotFoundException | ClassCastException e)
 		{
@@ -53,10 +54,7 @@ public final class TryUtilsTest extends UtilTestBase {
 		{
 			TryUtils.sneaky(() ->
 			{
-				if (true)
-				{
-					throw new Exception();
-				}
+				throw new Exception();
 			});
 		}).doesThrow(SNEAKY_EXCEPTION);
 	}
@@ -68,11 +66,7 @@ public final class TryUtilsTest extends UtilTestBase {
 		{
 			TryUtils.sneaky(() ->
 			{
-				if (true)
-				{
-					throw new Exception();
-				}
-				return null;
+				throw new Exception();
 			});
 		}).doesThrow(SNEAKY_EXCEPTION);
 	}
