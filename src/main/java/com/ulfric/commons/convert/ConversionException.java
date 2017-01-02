@@ -3,10 +3,19 @@ package com.ulfric.commons.convert;
 @SuppressWarnings("serial")
 public class ConversionException extends RuntimeException {
 
-	ConversionException() { }
+	public ConversionException()
+	{
 
-	ConversionException(String message) { super(message); }
+	}
 
-	ConversionException(Throwable throwable) { super(throwable); }
+	public ConversionException(String message)
+	{
+		super(message);
+	}
+
+	public ConversionException(Throwable throwable)
+	{
+		super(throwable);
+	}
 
 }

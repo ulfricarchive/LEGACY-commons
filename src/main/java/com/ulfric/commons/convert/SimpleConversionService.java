@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.ulfric.commons.convert.converter.Converter;
-import com.ulfric.commons.exception.Failure;
 import com.ulfric.commons.reflect.MultiObject;
 import com.ulfric.commons.reflect.MultiType;
 import com.ulfric.commons.result.ValueMissingException;
@@ -99,16 +98,9 @@ final class SimpleConversionService implements ConversionService {
 			{
 				return this.earlyResolve(to);
 			}
-			catch (Failure failure)
+			catch (EarlyResolveException failure)
 			{
-				Throwable cause = failure.getCause();
-
-				if (cause instanceof EarlyResolveException)
-				{
-					return this.resolve(to);
-				}
-
-				return Failure.raise(cause);
+				return this.resolve(to);
 			}
 		}
 
@@ -123,24 +115,17 @@ final class SimpleConversionService implements ConversionService {
 				SimpleConversionService.this.cacheConverter(converter);
 				return this.runConverter(converter);
 			}
-			catch (Failure failure)
+			catch (ValueMissingException failure)
 			{
-				Throwable cause = failure.getCause();
-
-				if (cause instanceof ValueMissingException)
-				{
-					return this.selfMatch(to);
-				}
-
-				return Failure.raise(cause);
+				return this.selfMatch(to);
 			}
 		}
 
 		private <T> T selfMatch(MultiType to)
 		{
 			@SuppressWarnings("unchecked")
-			T result = (T) this.from.firstMatch(to).orElseGet(() ->
-				Failure.raise(ConversionException.class, "Unable to convert " + this.from.toType() + " to " + to));
+			T result = (T) this.from.firstMatch(to).orElseThrow(() ->
+				new ConversionException("Unable to convert " + this.from.toType() + " to " + to));
 			return result;
 		}
 
@@ -149,13 +134,13 @@ final class SimpleConversionService implements ConversionService {
 			Map<MultiType, Converter<?>> earlyConverters = SimpleConversionService.this.resolved.get(to);
 			if (earlyConverters == null)
 			{
-				return Failure.raise(EarlyResolveException.class);
+				throw new EarlyResolveException();
 			}
 
 			Converter<?> converter = earlyConverters.get(this.from.toType());
 			if (converter == null)
 			{
-				return Failure.raise(EarlyResolveException.class);
+				throw new EarlyResolveException();
 			}
 
 			return this.runConverter(converter);
@@ -184,7 +169,7 @@ final class SimpleConversionService implements ConversionService {
 				}
 			}
 
-			return Failure.raise(ValueMissingException.class);
+			throw new ValueMissingException();
 		}
 	}
 

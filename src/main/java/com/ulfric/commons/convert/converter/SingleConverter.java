@@ -3,7 +3,6 @@ package com.ulfric.commons.convert.converter;
 import java.util.Optional;
 
 import com.ulfric.commons.convert.ConversionException;
-import com.ulfric.commons.exception.Failure;
 import com.ulfric.commons.reflect.MultiObject;
 import com.ulfric.commons.reflect.MultiType;
 
@@ -31,7 +30,7 @@ public abstract class SingleConverter<T, R> extends Converter<R> {
 			return this.convert(get);
 		}
 
-		return Failure.raise(ConversionException.class);
+		throw new ConversionException();
 	}
 
 	public abstract R convert(T from);
