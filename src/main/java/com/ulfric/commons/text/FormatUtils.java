@@ -2,9 +2,9 @@ package com.ulfric.commons.text;
 
 import java.text.NumberFormat;
 
-import com.ulfric.commons.api.UtilInstantiationException;
+public enum FormatUtils {
 
-public class FormatUtils {
+	;
 
 	public static String formatLong(long value)
 	{
@@ -14,11 +14,6 @@ public class FormatUtils {
 	public static String formatMilliseconds(long value)
 	{
 		return FormatUtils.formatLong(Math.abs(value)) + "ms";
-	}
-
-	private FormatUtils()
-	{
-		throw new UtilInstantiationException();
 	}
 
 }

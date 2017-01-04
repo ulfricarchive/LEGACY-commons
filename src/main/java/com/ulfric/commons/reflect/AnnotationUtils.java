@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import com.ulfric.commons.api.UtilInstantiationException;
 import com.ulfric.commons.collect.SetUtils;
 
-public class AnnotationUtils {
+public enum AnnotationUtils {
+
+	;
 
 	public static List<Annotation> getLeafAnnotations(AnnotatedElement holder, Class<? extends Annotation> seed)
 	{
@@ -100,11 +101,6 @@ public class AnnotationUtils {
 
 			return this.results;
 		}
-	}
-
-	private AnnotationUtils()
-	{
-		throw new UtilInstantiationException();
 	}
 
 }

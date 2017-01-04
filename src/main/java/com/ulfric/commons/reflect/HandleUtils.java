@@ -5,9 +5,9 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-import com.ulfric.commons.api.UtilInstantiationException;
+public enum HandleUtils {
 
-public class HandleUtils {
+	;
 
 	public static MethodHandle createSetter(Field field)
 	{
@@ -21,11 +21,6 @@ public class HandleUtils {
 		{
 			throw new RuntimeException(e);
 		}
-	}
-
-	private HandleUtils()
-	{
-		throw new UtilInstantiationException();
 	}
 
 }
