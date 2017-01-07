@@ -1,6 +1,7 @@
 package com.ulfric.commons.naming;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public interface Named {
 
@@ -11,16 +12,16 @@ public interface Named {
 
 	static String getNameFromAnnotation(Named named)
 	{
+		return Named.tryToGetNameFromAnnotation(named).orElseThrow(NameMissingException::new);
+	}
+
+	static Optional<String> tryToGetNameFromAnnotation(Named named)
+	{
 		Objects.requireNonNull(named);
 
 		Name name = named.getClass().getAnnotation(Name.class);
 
-		if (name == null)
-		{
-			throw new NameMissingException();
-		}
-
-		return name.value();
+		return name == null ? Optional.empty() : Optional.of(name.value());
 	}
 
 }
