@@ -1,8 +1,9 @@
 package com.ulfric.commons.service;
 
 import com.ulfric.commons.naming.Named;
+import com.ulfric.commons.version.Versioned;
 
-public interface Service extends Named {
+public interface Service extends Named, Versioned {
 
 	@Override
 	default String getName()
@@ -16,6 +17,12 @@ public interface Service extends Named {
 			}
 			return name;
 		});
+	}
+
+	@Override
+	default int getVersion()
+	{
+		return Versioned.tryToGetVersionFromAnnotation(this).orElse(1);
 	}
 
 }
