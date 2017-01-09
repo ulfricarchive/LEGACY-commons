@@ -16,4 +16,16 @@ public enum Try {
 		}
 	}
 
+	public static void to(TryRunnable runnable)
+	{
+		try
+		{
+			runnable.run();
+		}
+		catch (Throwable throwable)
+		{
+			throw new RuntimeException(throwable);
+		}
+	}
+
 }

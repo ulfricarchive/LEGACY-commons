@@ -26,4 +26,23 @@ class TryTest extends UtilTestBase {
 		Verify.that(() -> Try.to(supplier)).doesThrow(NullPointerException.class);
 	}
 
+	@Test
+	void test_tryRunnable_runsRunnable()
+	{
+		final boolean[] run = {false};
+
+		TryRunnable runnable = () -> { run[0] = true; };
+
+		Try.to(runnable);
+
+		Verify.that(run[0]).isTrue();
+	}
+
+	@Test
+	void test_tryRunnable_rethrowsExceptions()
+	{
+		TryRunnable tryRunnable = () -> { throw new Exception(); };
+		Verify.that(() -> Try.to(tryRunnable)).doesThrow(RuntimeException.class);
+	}
+
 }
