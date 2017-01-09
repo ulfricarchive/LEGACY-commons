@@ -1,4 +1,4 @@
-package com.ulfric.commons.naming;
+package com.ulfric.commons.version;
 
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -7,12 +7,12 @@ import org.junit.runner.RunWith;
 import com.ulfric.verify.Verify;
 
 @RunWith(JUnitPlatform.class)
-class NameMissingExceptionTest {
+class VersionMissingExceptionTest {
 
 	@Test
 	void testConstructorDoesNotThrowExceptions()
 	{
-		Verify.that(NameMissingException::new).runsWithoutExceptions();
+		Verify.that(VersionMissingExceptionTest::new).runsWithoutExceptions();
 	}
 
 }
