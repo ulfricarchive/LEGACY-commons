@@ -5,6 +5,8 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
+import com.ulfric.commons.exception.Try;
+
 public enum HandleUtils {
 
 	;
@@ -13,14 +15,7 @@ public enum HandleUtils {
 	{
 		Objects.requireNonNull(field);
 
-		try
-		{
-			return MethodHandles.lookup().unreflectSetter(field);
-		}
-		catch (IllegalAccessException e)
-		{
-			throw new RuntimeException(e);
-		}
+		return Try.to(() -> MethodHandles.lookup().unreflectSetter(field));
 	}
 
 }
