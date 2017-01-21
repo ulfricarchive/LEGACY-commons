@@ -1,5 +1,6 @@
 package com.ulfric.commons.reflect;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,20 @@ class HandleUtilsTest extends UtilTestBase {
 	void testCreateSetterFromPublicField()
 	{
 		Verify.that(() -> HandleUtils.createSetter(this.field2)).suppliesUniqueValues();
+	}
+
+	@Test
+	void testCreateGenericSetterFromNull()
+	{
+		Verify.that(() -> HandleUtils.createGenericSetter(null)).doesThrow(NullPointerException.class);
+	}
+
+	@Test
+	void testCreateGenericSetterWorksAsExpected()
+	{
+		MethodHandle genericSetter = HandleUtils.createGenericSetter(this.field2);
+		Object genericField = this.field2;
+		Verify.that(() -> {genericSetter.invokeExact((Object) this, genericField);}).runsWithoutExceptions();
 	}
 
 	private Field field1 = this.getField("field1");

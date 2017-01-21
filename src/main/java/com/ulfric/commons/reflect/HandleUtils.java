@@ -11,6 +11,12 @@ public enum HandleUtils {
 
 	;
 
+	public static MethodHandle createGenericSetter(Field field)
+	{
+		MethodHandle setter = HandleUtils.createSetter(field);
+		return setter.asType(setter.type().erase());
+	}
+
 	public static MethodHandle createSetter(Field field)
 	{
 		Objects.requireNonNull(field);
