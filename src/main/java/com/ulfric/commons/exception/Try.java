@@ -28,4 +28,26 @@ public enum Try {
 		}
 	}
 
+	public static void blind(TryRunnable runnable)
+	{
+		try
+		{
+			runnable.run();
+		}
+		catch (Throwable ignored)
+		{}
+	}
+
+	public static <T> T blind(TrySupplier<T> supplier)
+	{
+		try
+		{
+			return supplier.get();
+		}
+		catch (Throwable ignored)
+		{}
+
+		return null;
+	}
+
 }
