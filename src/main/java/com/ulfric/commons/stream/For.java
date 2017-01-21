@@ -11,7 +11,7 @@ import java.util.stream.BaseStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class For<T> {
+public final class For<T> {
 
 	public static <T> For<T> each(T[] values)
 	{
@@ -31,7 +31,7 @@ public class For<T> {
 	{
 		Objects.requireNonNull(stream);
 
-		return new For<>(StreamUtils.erase(stream));
+		return For.each(StreamUtils.erase(stream));
 	}
 
 	public static <T> For<T> each(Stream<T> stream)
@@ -50,13 +50,7 @@ public class For<T> {
 
 	public <R> For<R> collect(Function<T, R> function)
 	{
-		List<R> values = new ArrayList<>();
-
-		this.stream.forEach(value ->
-				values.add(function.apply(value))
-		);
-
-		return new For<>(values.stream());
+		return For.each(this.stream.map(function));
 	}
 
 	public <R> For<R> arrayCollect(ArrayFunction<T, R> function)
@@ -67,7 +61,7 @@ public class For<T> {
 				values.addAll(Arrays.asList(function.apply(value)))
 		);
 
-		return new For<>(values.stream());
+		return For.each(values.stream());
 	}
 
 	public <R> For<R> streamCollect(StreamedFunction<T, R> function)
@@ -78,7 +72,7 @@ public class For<T> {
 				values.addAll(function.apply(value).collect(Collectors.toList()))
 		);
 
-		return new For<>(values.stream());
+		return For.each(values.stream());
 	}
 
 	public <R> For<R> baseStreamCollect(BaseStreamedFunction<T, R> function)
@@ -92,7 +86,7 @@ public class For<T> {
 				)
 		);
 
-		return new For<>(values.stream());
+		return For.each(values.stream());
 	}
 
 	public <R> For<R> multiCollect(CollectedFunction<T, R> function)
@@ -103,7 +97,7 @@ public class For<T> {
 				values.addAll(function.apply(value))
 		);
 
-		return new For<>(values.stream());
+		return For.each(values.stream());
 	}
 
 	public void each(Consumer<T> consumer)
