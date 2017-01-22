@@ -31,7 +31,7 @@ public final class For<T> {
 	{
 		Objects.requireNonNull(stream);
 
-		return For.each(StreamUtils.erase(stream));
+		return For.each(StreamUtils.cut(stream));
 	}
 
 	public static <T> For<T> each(Stream<T> stream)
@@ -81,7 +81,7 @@ public final class For<T> {
 
 		this.stream.forEach(value ->
 				values.addAll(
-						StreamUtils.erase(function.apply(value))
+						StreamUtils.cut(function.apply(value))
 								.collect(Collectors.toList())
 				)
 		);

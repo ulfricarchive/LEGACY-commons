@@ -9,7 +9,7 @@ public enum StreamUtils {
 
 	;
 
-	public static <T> Stream<T> erase(BaseStream<T, ?> stream)
+	public static <T> Stream<T> cut(BaseStream<T, ?> stream)
 	{
 		return IteratorUtils.toList(stream.iterator()).stream();
 	}

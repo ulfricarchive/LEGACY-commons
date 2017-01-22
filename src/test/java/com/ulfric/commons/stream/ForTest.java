@@ -54,9 +54,8 @@ public class ForTest {
 		new StreamTest().test();
 	}
 
-	private class StaticTest extends ForEachTest
+	static class StaticTest extends ForEachTest
 	{
-
 		@Override
 		protected void test()
 		{
@@ -73,7 +72,7 @@ public class ForTest {
 		}
 	}
 
-	private class ArrayTest extends ForEachTest
+	static class ArrayTest extends ForEachTest
 	{
 		private Integer[] getArray()
 		{
@@ -99,7 +98,7 @@ public class ForTest {
 		}
 	}
 
-	private class CollectionTest extends ForEachTest
+	static class CollectionTest extends ForEachTest
 	{
 		private Collection<Integer> getCollection()
 		{
@@ -125,7 +124,7 @@ public class ForTest {
 		}
 	}
 
-	private class BaseStreamTest extends ForEachTest
+	static class BaseStreamTest extends ForEachTest
 	{
 		@Override
 		protected void test()
@@ -146,11 +145,11 @@ public class ForTest {
 		}
 	}
 
-	private class StreamTest extends ForEachTest
+	static class StreamTest extends ForEachTest
 	{
 		private Stream<Integer> getStream()
 		{
-			return StreamUtils.erase(IntStream.range(0, 5));
+			return StreamUtils.cut(IntStream.range(0, 5));
 		}
 
 		@Override
@@ -172,7 +171,7 @@ public class ForTest {
 		}
 	}
 
-	private abstract class ForEachTest
+	static abstract class ForEachTest
 	{
 		protected final List<Integer> forEachValues = new ArrayList<>();
 		protected final List<Integer> forLoopValues = new ArrayList<>();
