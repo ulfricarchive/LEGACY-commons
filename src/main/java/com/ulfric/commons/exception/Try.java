@@ -12,7 +12,7 @@ public enum Try {
 		}
 		catch (Throwable throwable)
 		{
-			throw new RuntimeException(throwable);
+			throw Try.getPropogated(throwable);
 		}
 	}
 
@@ -24,30 +24,13 @@ public enum Try {
 		}
 		catch (Throwable throwable)
 		{
-			throw new RuntimeException(throwable);
+			throw Try.getPropogated(throwable);
 		}
 	}
 
-	public static void blind(TryRunnable runnable)
+	private static RuntimeException getPropogated(Throwable throwable)
 	{
-		try
-		{
-			runnable.run();
-		}
-		catch (Throwable ignored)
-		{}
-	}
-
-	public static <T> T blind(TrySupplier<T> supplier)
-	{
-		try
-		{
-			return supplier.get();
-		}
-		catch (Throwable ignored)
-		{}
-
-		return null;
+		return (throwable instanceof RuntimeException) ? (RuntimeException) throwable : new RuntimeException(throwable);
 	}
 
 }
