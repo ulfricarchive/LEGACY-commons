@@ -1,8 +1,22 @@
 package com.ulfric.commons.exception;
 
+import java.util.concurrent.Future;
+
 public enum Try {
 
 	;
+
+	public static <T> T to(Future<T> future)
+	{
+		try
+		{
+			return future.get();
+		}
+		catch (Throwable throwable)
+		{
+			throw Try.getPropogated(throwable);
+		}
+	}
 
 	public static <T> T to(TrySupplier<T> supplier)
 	{
