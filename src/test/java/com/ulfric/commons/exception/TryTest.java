@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import com.ulfric.commons.func.CheckedFunction;
+import com.ulfric.commons.func.CheckedRunnable;
+import com.ulfric.commons.func.CheckedSupplier;
 import com.ulfric.testing.Util;
 import com.ulfric.testing.UtilTestBase;
 import com.ulfric.verify.Verify;
@@ -18,25 +21,25 @@ import com.ulfric.verify.Verify;
 class TryTest extends UtilTestBase {
 
 	@Test
-	void testTo_TrySupplier_RunsSupplier()
+	void testTo_checkedSupplier_RunsSupplier()
 	{
-		TrySupplier<Object> supplier = Object::new;
+		CheckedSupplier<Object> supplier = Object::new;
 		Verify.that(() -> Try.to(supplier)).valueIsNotNull();
 	}
 
 	@Test
-	void testTo_TrySupplierThrowsNPE_DoesThrowNPE()
+	void testTo_checkedSupplierThrowsNPE_DoesThrowNPE()
 	{
-		TrySupplier<Object> supplier = () -> { throw new NullPointerException(); };
+		CheckedSupplier<Object> supplier = () -> { throw new NullPointerException(); };
 		Verify.that(() -> Try.to(supplier)).doesThrow(NullPointerException.class);
 	}
 
 	@Test
-	void test_tryRunnable_runsRunnable()
+	void test_checkedRunnable_runsRunnable()
 	{
 		final boolean[] run = {false};
 
-		TryRunnable runnable = () -> { run[0] = true; };
+		CheckedRunnable runnable = () -> { run[0] = true; };
 
 		Try.to(runnable);
 
@@ -44,10 +47,10 @@ class TryTest extends UtilTestBase {
 	}
 
 	@Test
-	void test_tryRunnable_rethrowsExceptions()
+	void test_checkedRunnable_rethrowsExceptions()
 	{
-		TryRunnable tryRunnable = () -> { throw new Exception(); };
-		Verify.that(() -> Try.to(tryRunnable)).doesThrow(RuntimeException.class);
+		CheckedRunnable CheckedRunnable = () -> { throw new Exception(); };
+		Verify.that(() -> Try.to(CheckedRunnable)).doesThrow(RuntimeException.class);
 	}
 
 	@Test
@@ -80,6 +83,25 @@ class TryTest extends UtilTestBase {
 			}
 		};
 		Verify.that(() -> Try.to(thrw)).doesThrow(RuntimeException.class);
+	}
+
+	@Test
+	void test_tryFunction_runsFunction()
+	{
+		CheckedFunction<Boolean, Boolean> function = x -> x;
+
+		Verify.that(Try.to(function, () -> true)).isTrue();
+	}
+
+	@Test
+	void test_tryFunction_rethrowsExceptions()
+	{
+		CheckedFunction<Boolean, Boolean> function = x ->
+		{
+			throw new RuntimeException();
+		};
+
+		Verify.that(() -> Try.to(function, () -> true)).doesThrow(RuntimeException.class);
 	}
 
 	private abstract class SimpleFuture<T> implements Future<T>

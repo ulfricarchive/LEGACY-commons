@@ -2,6 +2,10 @@ package com.ulfric.commons.exception;
 
 import java.util.concurrent.Future;
 
+import com.ulfric.commons.func.CheckedFunction;
+import com.ulfric.commons.func.CheckedRunnable;
+import com.ulfric.commons.func.CheckedSupplier;
+
 public enum Try {
 
 	;
@@ -18,7 +22,7 @@ public enum Try {
 		}
 	}
 
-	public static <T> T to(TrySupplier<T> supplier)
+	public static <T> T to(CheckedSupplier<T> supplier)
 	{
 		try
 		{
@@ -30,7 +34,19 @@ public enum Try {
 		}
 	}
 
-	public static void to(TryRunnable runnable)
+	public static <T, R> R to(CheckedFunction<T, R> function, CheckedSupplier<T> supplier)
+	{
+		try
+		{
+			return function.get(supplier.get());
+		}
+		catch (Throwable throwable)
+		{
+			throw Try.getPropogated(throwable);
+		}
+	}
+
+	public static void to(CheckedRunnable runnable)
 	{
 		try
 		{
