@@ -3,6 +3,7 @@ package com.ulfric.commons.reflect;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 import com.ulfric.commons.exception.Try;
@@ -22,6 +23,13 @@ public enum HandleUtils {
 		Objects.requireNonNull(field);
 
 		return Try.to(() -> MethodHandles.lookup().unreflectSetter(field));
+	}
+
+	public static MethodHandle getMethod(Method method)
+	{
+		Objects.requireNonNull(method);
+
+		return Try.to(() -> MethodHandles.lookup().unreflect(method));
 	}
 
 }
