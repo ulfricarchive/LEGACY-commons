@@ -97,6 +97,7 @@ class HandleUtilsTest extends UtilTestBase {
 		this.methodRan = true;
 	}
 
+	@SuppressWarnings("unused")
 	private void privateMethod()
 	{
 		this.successfullyRun();
