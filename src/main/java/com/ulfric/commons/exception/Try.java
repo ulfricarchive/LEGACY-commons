@@ -2,10 +2,6 @@ package com.ulfric.commons.exception;
 
 import java.util.concurrent.Future;
 
-import com.ulfric.commons.func.CheckedFunction;
-import com.ulfric.commons.func.CheckedRunnable;
-import com.ulfric.commons.func.CheckedSupplier;
-
 public enum Try {
 
 	;

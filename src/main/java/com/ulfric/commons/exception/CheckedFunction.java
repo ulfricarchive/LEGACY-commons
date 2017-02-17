@@ -1,4 +1,4 @@
-package com.ulfric.commons.func;
+package com.ulfric.commons.exception;
 
 @FunctionalInterface
 public interface CheckedFunction<T, R> {

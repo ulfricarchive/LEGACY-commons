@@ -9,9 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import com.ulfric.commons.func.CheckedFunction;
-import com.ulfric.commons.func.CheckedRunnable;
-import com.ulfric.commons.func.CheckedSupplier;
 import com.ulfric.testing.Util;
 import com.ulfric.testing.UtilTestBase;
 import com.ulfric.verify.Verify;
