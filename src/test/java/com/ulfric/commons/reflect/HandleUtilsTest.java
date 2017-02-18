@@ -3,12 +3,15 @@ package com.ulfric.commons.reflect;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import com.ulfric.commons.exception.CheckedConsumer;
+import com.ulfric.commons.exception.Try;
 import com.ulfric.testing.Util;
 import com.ulfric.testing.UtilTestBase;
 import com.ulfric.verify.Verify;
@@ -57,17 +60,6 @@ class HandleUtilsTest extends UtilTestBase {
 		Verify.that(() -> {genericSetter.invokeExact((Object) this, genericField);}).runsWithoutExceptions();
 	}
 
-	private void testMethod(String methodName)
-	{
-		Method method = this.getMethod(methodName);
-		method.setAccessible(true);
-
-		MethodHandle handle = HandleUtils.getMethod(method);
-		this.invoke(handle);
-
-		Verify.that(this.methodRan).isTrue();
-	}
-
 	@Test
 	void testPublicMethodWasRun()
 	{
@@ -92,9 +84,31 @@ class HandleUtilsTest extends UtilTestBase {
 		this.testMethod("privateMethod");
 	}
 
-	private void successfullyRun()
+	@Test
+	void testMethodWasRunGenerically()
 	{
-		this.methodRan = true;
+		this.testGenericMethod("publicMethod");
+	}
+
+	private void testMethod(String methodName)
+	{
+		this.invokeMethodTest(methodName, HandleUtils::getMethod, handle ->  { handle.invokeExact(this); });
+	}
+
+	private void testGenericMethod(String methodName)
+	{
+		this.invokeMethodTest(methodName, HandleUtils::getGenericMethod, handle -> { handle.invokeExact((Object) this); });
+	}
+
+	private void invokeMethodTest(String methodName, Function<Method, MethodHandle> converter, CheckedConsumer<MethodHandle> invoke)
+	{
+		Method method = this.getMethod(methodName);
+		method.setAccessible(true);
+
+		MethodHandle handle = converter.apply(method);
+		Try.to(invoke, handle);
+
+		Verify.that(this.methodRan).isTrue();
 	}
 
 	@SuppressWarnings("unused")
@@ -116,6 +130,11 @@ class HandleUtilsTest extends UtilTestBase {
 	public void publicMethod()
 	{
 		this.successfullyRun();
+	}
+
+	private void successfullyRun()
+	{
+		this.methodRan = true;
 	}
 
 	private Field field1 = this.getField("field1");
@@ -142,18 +161,6 @@ class HandleUtilsTest extends UtilTestBase {
 		catch (NoSuchMethodException | SecurityException e)
 		{
 			throw new RuntimeException(e);
-		}
-	}
-
-	private void invoke(MethodHandle handle)
-	{
-		try
-		{
-			handle.invokeExact(this);
-		}
-		catch (Throwable throwable)
-		{
-			throw new RuntimeException(throwable);
 		}
 	}
 

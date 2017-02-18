@@ -30,6 +30,18 @@ public enum Try {
 		}
 	}
 
+	public static <T> void to(CheckedConsumer<T> consumer, T value)
+	{
+		try
+		{
+			consumer.accept(value);
+		}
+		catch (Throwable throwable)
+		{
+			throw Try.getPropogated(throwable);
+		}
+	}
+
 	public static <T, R> R to(CheckedFunction<T, R> function, CheckedSupplier<T> supplier)
 	{
 		try

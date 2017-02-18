@@ -8,6 +8,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 
 import com.ulfric.testing.Util;
 import com.ulfric.testing.UtilTestBase;
@@ -99,6 +100,25 @@ class TryTest extends UtilTestBase {
 		};
 
 		Verify.that(() -> Try.to(function, () -> true)).doesThrow(RuntimeException.class);
+	}
+
+	@Test
+	void test_tryConsumer_runsConsumer() throws Throwable
+	{
+		CheckedConsumer<?> consumer = Mockito.mock(CheckedConsumer.class);
+		Try.to(consumer, null);
+		Mockito.verify(consumer, Mockito.atLeastOnce()).accept(Mockito.any());
+	}
+
+	@Test
+	void test_tryConsumer_rethrowsExceptions()
+	{
+		CheckedConsumer<?> consumer = ignore ->
+		{
+			throw new RuntimeException();
+		};
+
+		Verify.that(() -> Try.to(consumer, null)).doesThrow(RuntimeException.class);
 	}
 
 	private abstract class SimpleFuture<T> implements Future<T>
