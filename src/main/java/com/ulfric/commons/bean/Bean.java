@@ -61,7 +61,17 @@ public abstract class Bean<T extends Bean<T>> implements Serializable, Cloneable
 
 			if (value != null)
 			{
-				result = 37 * result + Arrays.deepHashCode(new Object[] { value });
+				int add;
+
+				if (value.getClass().isArray())
+				{
+					add = Arrays.deepHashCode(new Object[] { value });
+				}
+				else
+				{
+					add = value.hashCode();
+				}
+				result = 37 * result + add;
 			}
 		}
 
@@ -78,9 +88,8 @@ public abstract class Bean<T extends Bean<T>> implements Serializable, Cloneable
 	public final T clone()
 	{
 		@SuppressWarnings("unchecked")
-		T t = (T) SerializationUtils.clone(this);
-
-		return t;
+		T clone = (T) SerializationUtils.clone(this);
+		return clone;
 	}
 
 	private List<MethodHandle> generateIfEmptyAndGet()
@@ -97,7 +106,7 @@ public abstract class Bean<T extends Bean<T>> implements Serializable, Cloneable
 	private boolean isPartOfBean(Field field)
 	{
 		int modifiers = field.getModifiers();
-		return !Modifier.isTransient(modifiers) || !Modifier.isStatic(modifiers);
+		return !Modifier.isTransient(modifiers) && !Modifier.isStatic(modifiers);
 	}
 
 }
