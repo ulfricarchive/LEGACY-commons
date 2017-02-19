@@ -60,6 +60,39 @@ class HandleUtilsTest extends UtilTestBase {
 		Verify.that(() -> {genericSetter.invokeExact((Object) this, genericField);}).runsWithoutExceptions();
 	}
 
+
+
+	@Test
+	void testCreateGetterFromNull()
+	{
+		Verify.that(() -> HandleUtils.createGetter(null)).doesThrow(NullPointerException.class);
+	}
+
+	@Test
+	void testCreateGetterFromPrivateField()
+	{
+		Verify.that(() -> HandleUtils.createGetter(this.field1)).doesThrow(IllegalAccessException.class);
+	}
+
+	@Test
+	void testCreateGetterFromPublicField()
+	{
+		Verify.that(() -> HandleUtils.createGetter(this.field2)).suppliesUniqueValues();
+	}
+
+	@Test
+	void testCreateGenericGetterFromNull()
+	{
+		Verify.that(() -> HandleUtils.createGenericGetter(null)).doesThrow(NullPointerException.class);
+	}
+
+	@Test
+	void testCreateGenericGetterWorksAsExpected()
+	{
+		MethodHandle genericGetter = HandleUtils.createGenericGetter(this.field2);
+		Verify.that(() -> genericGetter.invokeExact((Object) this)).valueIsEqualTo(this.field2);
+	}
+
 	@Test
 	void testPublicMethodWasRun()
 	{
