@@ -18,36 +18,36 @@ import com.google.gson.Gson;
 import com.ulfric.commons.exception.Try;
 import com.ulfric.commons.reflect.HandleUtils;
 
-public abstract class Bean implements Serializable, Cloneable {
+public abstract class Bean<T extends Bean<T>> implements Serializable, Cloneable {
 
 	private static final Gson GSON = new Gson();
 	private static final Map<Class<? extends Bean>, List<MethodHandle>> FIELDS = new HashMap<>();
 	private static final long serialVersionUID = 0L;
 
 	@Override
-	public final boolean equals(Object object)
+	public final boolean equals(Object that)
 	{
-		if (this == object)
+		if (this == that)
 		{
 			return true;
 		}
 
-		if (object == null || this.getClass() != object.getClass())
+		if (that == null || this.getClass() != that.getClass())
 		{
 			return false;
 		}
 
-		Bean that = (Bean) object;
+		return this.generateIfEmptyAndGet()
+				.stream()
+				.allMatch(handle -> this.valuesEqual(handle, that));
+	}
 
-		for (MethodHandle handle : this.generateIfEmptyAndGet())
-		{
-			if (! Try.to(() -> Objects.deepEquals(handle.invokeExact((Object) this), (handle.invokeExact(that)))) )
-			{
-				return false;
-			}
-		}
+	private boolean valuesEqual(MethodHandle handle, Object that)
+	{
+		Object thisValue = Try.to(() -> handle.invokeExact((Object) this));
+		Object thatValue = Try.to(() -> handle.invokeExact(that));
 
-		return true;
+		return Objects.deepEquals(thisValue, thatValue);
 	}
 
 	@Override
@@ -57,24 +57,12 @@ public abstract class Bean implements Serializable, Cloneable {
 
 		for (MethodHandle handle : this.generateIfEmptyAndGet())
 		{
-			int add = Try.to(() ->
+			Object value = Try.to(() -> handle.invokeExact((Object) this));
+
+			if (value != null)
 			{
-				Object value = handle.invokeExact((Object) this);
-
-				if (value == null)
-				{
-					return 0;
-				}
-
-				if (value.getClass().isArray())
-				{
-					return Arrays.deepHashCode((Object[]) value);
-				}
-
-				return value.hashCode();
-			});
-
-			result = 37 * result + add;
+				result = 37 * result + Arrays.deepHashCode(new Object[] { value });
+			}
 		}
 
 		return result;
@@ -83,31 +71,33 @@ public abstract class Bean implements Serializable, Cloneable {
 	@Override
 	public final String toString()
 	{
-		return GSON.toJson(this);
+		return Bean.GSON.toJson(this);
 	}
 
 	@Override
-	public final Bean clone()
+	public final T clone()
 	{
-		return SerializationUtils.clone(this);
+		@SuppressWarnings("unchecked")
+		T t = (T) SerializationUtils.clone(this);
+
+		return t;
 	}
 
 	private List<MethodHandle> generateIfEmptyAndGet()
 	{
-		return Bean.FIELDS.computeIfAbsent(this.getClass(), ignored ->
-				FieldUtils.getAllFieldsList(this.getClass())
+		return Bean.FIELDS.computeIfAbsent(this.getClass(), key ->
+				FieldUtils.getAllFieldsList(key)
 						.stream()
-						.filter(field -> ! this.isTransientOrStatic(field))
+						.filter(this::isPartOfBean)
 						.peek(field -> field.setAccessible(true))
 						.map(HandleUtils::createGenericGetter)
 						.collect(Collectors.toList()));
 	}
 
-	private boolean isTransientOrStatic(Field field)
+	private boolean isPartOfBean(Field field)
 	{
 		int modifiers = field.getModifiers();
-
-		return Modifier.isTransient(modifiers) || Modifier.isStatic(modifiers);
+		return !Modifier.isTransient(modifiers) || !Modifier.isStatic(modifiers);
 	}
 
 }
