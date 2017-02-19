@@ -1,6 +1,8 @@
 package com.ulfric.commons.artifact;
 
-public final class Artifact {
+import com.ulfric.commons.bean.Bean;
+
+public final class Artifact extends Bean {
 
 	private String group;
 	private String artifact;
@@ -15,17 +17,17 @@ public final class Artifact {
 
 	public String getGroup()
 	{
-		return group;
+		return this.group;
 	}
 
 	public String getArtifact()
 	{
-		return artifact;
+		return this.artifact;
 	}
 
 	public Version getVersion()
 	{
-		return version;
+		return this.version;
 	}
 
 }

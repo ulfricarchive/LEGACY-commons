@@ -1,6 +1,8 @@
 package com.ulfric.commons.artifact;
 
-public final class Version {
+import com.ulfric.commons.bean.Bean;
+
+public final class Version extends Bean {
 
 	private final int major;
 	private final int minor;
@@ -17,22 +19,22 @@ public final class Version {
 
 	public int getMajor()
 	{
-		return major;
+		return this.major;
 	}
 
 	public int getMinor()
 	{
-		return minor;
+		return this.minor;
 	}
 
 	public int getSecurity()
 	{
-		return security;
+		return this.security;
 	}
 
 	public String getFull()
 	{
-		return full;
+		return this.full;
 	}
 
 }
