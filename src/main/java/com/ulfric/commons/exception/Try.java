@@ -14,7 +14,7 @@ public enum Try {
 		}
 		catch (Throwable throwable)
 		{
-			throw Try.getPropogated(throwable);
+			throw ThrowableUtils.getPropogated(throwable);
 		}
 	}
 
@@ -26,7 +26,7 @@ public enum Try {
 		}
 		catch (Throwable throwable)
 		{
-			throw Try.getPropogated(throwable);
+			throw ThrowableUtils.getPropogated(throwable);
 		}
 	}
 
@@ -38,7 +38,7 @@ public enum Try {
 		}
 		catch (Throwable throwable)
 		{
-			throw Try.getPropogated(throwable);
+			throw ThrowableUtils.getPropogated(throwable);
 		}
 	}
 
@@ -50,7 +50,7 @@ public enum Try {
 		}
 		catch (Throwable throwable)
 		{
-			throw Try.getPropogated(throwable);
+			throw ThrowableUtils.getPropogated(throwable);
 		}
 	}
 
@@ -62,13 +62,8 @@ public enum Try {
 		}
 		catch (Throwable throwable)
 		{
-			throw Try.getPropogated(throwable);
+			throw ThrowableUtils.getPropogated(throwable);
 		}
-	}
-
-	private static RuntimeException getPropogated(Throwable throwable)
-	{
-		return (throwable instanceof RuntimeException) ? (RuntimeException) throwable : new RuntimeException(throwable);
 	}
 
 }
