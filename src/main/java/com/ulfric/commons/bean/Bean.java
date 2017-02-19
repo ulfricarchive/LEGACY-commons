@@ -61,27 +61,23 @@ public abstract class Bean<T extends Bean<T>> implements Serializable, Cloneable
 
 			if (value != null)
 			{
-				result = this.addToHash(result, value);
+				result = (37 * result) + this.generateHash(value);
 			}
 		}
 
 		return result;
 	}
 
-	private int addToHash(int current, Object value)
+	private int generateHash(Object value)
 	{
-		int add;
-
 		if (value.getClass().isArray())
 		{
-			add = Arrays.deepHashCode(new Object[] { value });
+			return Arrays.deepHashCode(new Object[] { value });
 		}
 		else
 		{
-			add = value.hashCode();
+			return value.hashCode();
 		}
-
-		return  37 * current + add;
 	}
 
 	@Override
