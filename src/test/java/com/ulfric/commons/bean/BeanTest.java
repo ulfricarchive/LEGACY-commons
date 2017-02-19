@@ -94,6 +94,7 @@ public class BeanTest {
 		Verify.that(this.bean.toString()).isEqualTo(this.bean.clone().toString());
 	}
 
+	@SuppressWarnings({"unused", "serial"})
 	private static class TestBean extends Bean<TestBean>
 	{
 		private final int foo;
