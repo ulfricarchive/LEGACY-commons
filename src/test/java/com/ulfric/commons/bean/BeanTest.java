@@ -94,7 +94,7 @@ public class BeanTest {
 		Verify.that(this.bean.toString()).isEqualTo(this.bean.clone().toString());
 	}
 
-	private static class TestBean extends Bean
+	private static class TestBean extends Bean<TestBean>
 	{
 		private final int foo;
 		private int bar;

@@ -24,6 +24,9 @@ public abstract class Bean<T extends Bean<T>> implements Serializable, Cloneable
 	private static final Map<Class<? extends Bean>, List<MethodHandle>> FIELDS = new HashMap<>();
 	private static final long serialVersionUID = 0L;
 
+	private static final int HASHCODE_BASE = 17;
+	private static final int HASHCODE_MULTIPLICAND = 37;
+
 	@Override
 	public final boolean equals(Object that)
 	{
@@ -53,7 +56,7 @@ public abstract class Bean<T extends Bean<T>> implements Serializable, Cloneable
 	@Override
 	public final int hashCode()
 	{
-		int result = 17;
+		int result = Bean.HASHCODE_BASE;
 
 		for (MethodHandle handle : this.generateIfEmptyAndGet())
 		{
@@ -61,7 +64,7 @@ public abstract class Bean<T extends Bean<T>> implements Serializable, Cloneable
 
 			if (value != null)
 			{
-				result = (37 * result) + this.generateHash(value);
+				result = (result * Bean.HASHCODE_MULTIPLICAND) + this.generateHash(value);
 			}
 		}
 
