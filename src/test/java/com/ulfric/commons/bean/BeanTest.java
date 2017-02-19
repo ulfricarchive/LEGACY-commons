@@ -94,12 +94,13 @@ public class BeanTest {
 		Verify.that(this.bean.toString()).isEqualTo(this.bean.clone().toString());
 	}
 
+	@SuppressWarnings({"unused", "serial"})
 	private static class TestBean extends Bean<TestBean>
 	{
 		private final int foo;
 		private int bar;
 		public int[] baz;
-		public Object nullValue = null;
+		public Bean nullValue = null;
 
 		public TestBean(int foo, int bar, int[] baz)
 		{
