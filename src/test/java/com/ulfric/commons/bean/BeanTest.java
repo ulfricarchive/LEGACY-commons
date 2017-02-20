@@ -100,7 +100,7 @@ public class BeanTest {
 		private final int foo;
 		private int bar;
 		public int[] baz;
-		public Bean nullValue = null;
+		public Bean<?> nullValue = null;
 
 		public TestBean(int foo, int bar, int[] baz)
 		{

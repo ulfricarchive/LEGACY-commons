@@ -15,7 +15,7 @@ public class VersionTest {
 	@BeforeEach
 	void init()
 	{
-		this.version = new Version(1, 2, 3);
+		this.version = Version.builder().setMajor(1).setMinor(2).setSecurity(3).build();
 	}
 
 	@Test
@@ -30,6 +30,64 @@ public class VersionTest {
 	void testFullVersion()
 	{
 		Verify.that(this.version.getFull()).isEqualTo("1.2.3");
+	}
+
+	@Test
+	void testBuilderNegativeMajor()
+	{
+		Verify.that(() -> Version.builder().setSecurity(-1)).doesThrow(IllegalArgumentException.class);
+	}
+
+	@Test
+	void testBuilderNegativeMinor()
+	{
+		Verify.that(() -> Version.builder().setMinor(-1)).doesThrow(IllegalArgumentException.class);
+	}
+
+	@Test
+	void testBuilderNegativeSecurity()
+	{
+		Verify.that(() -> Version.builder().setSecurity(-1)).doesThrow(IllegalArgumentException.class);
+	}
+
+	@Test
+	void testCompareToZero()
+	{
+		Verify.that(this.version.compareTo(Version.ZERO)).isEqualTo(-1);
+	}
+
+	@Test
+	void testZeroCompareTo()
+	{
+		Verify.that(Version.ZERO.compareTo(this.version)).isEqualTo(1);
+	}
+
+	@Test
+	void testZeroCompareToSame()
+	{
+		Verify.that(Version.ZERO.compareTo(Version.ZERO)).isZero();
+	}
+
+	@Test
+	void testZeroCompareToEqual()
+	{
+		Verify.that(Version.ZERO.compareTo(Version.builder().build())).isZero();
+	}
+
+	@Test
+	void testCompareToMinor()
+	{
+		Verify.that(Version.builder()
+				.setMinor(1)
+				.build().compareTo(Version.builder()
+						.setMinor(2)
+						.build())).isEqualTo(1);
+	}
+
+	@Test
+	void testCompareToNull()
+	{
+		Verify.that(Version.ZERO.compareTo(null)).isEqualTo(1);
 	}
 
 }
