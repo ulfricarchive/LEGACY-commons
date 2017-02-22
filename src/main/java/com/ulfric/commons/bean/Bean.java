@@ -20,9 +20,10 @@ import com.ulfric.commons.reflect.HandleUtils;
 
 public abstract class Bean<T extends Bean<T>> implements Serializable, Cloneable {
 
+	private static final long serialVersionUID = 1L;
+
 	private static final Gson GSON = new Gson();
-	private static final Map<Class<? extends Bean>, List<MethodHandle>> FIELDS = new HashMap<>();
-	private static final long serialVersionUID = 0L;
+	private static final Map<Class<? extends Bean<?>>, List<MethodHandle>> FIELDS = new HashMap<>();
 
 	private static final int HASHCODE_BASE = 17;
 	private static final int HASHCODE_MULTIPLICAND = 37;
@@ -99,7 +100,9 @@ public abstract class Bean<T extends Bean<T>> implements Serializable, Cloneable
 
 	private List<MethodHandle> generateIfEmptyAndGet()
 	{
-		return Bean.FIELDS.computeIfAbsent(this.getClass(), key ->
+		@SuppressWarnings("unchecked")
+		Class<Bean<?>> thiz = (Class<Bean<?>>) this.getClass();
+		return Bean.FIELDS.computeIfAbsent(thiz, key ->
 				FieldUtils.getAllFieldsList(key)
 						.stream()
 						.filter(this::isPartOfBean)
