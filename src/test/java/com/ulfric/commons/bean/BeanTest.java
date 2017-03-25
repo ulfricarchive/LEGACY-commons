@@ -38,13 +38,6 @@ public class BeanTest {
 	}
 
 	@Test
-	void testBeanEquals_againstClone()
-	{
-		Verify.that(this.bean.equals(this.bean.clone())).isTrue();
-		Verify.that(this.bean).isEqualTo(this.bean.clone());
-	}
-
-	@Test
 	void testBeanEquals_againstOtherClass()
 	{
 		Verify.that(this.bean.equals(this)).isFalse();
@@ -71,12 +64,6 @@ public class BeanTest {
 	}
 
 	@Test
-	void testBeanHashcode_againstClone()
-	{
-		Verify.that(this.bean.hashCode()).isEqualTo(this.bean.clone().hashCode());
-	}
-
-	@Test
 	void testBeanToString_againstSelf()
 	{
 		Verify.that(this.bean.toString()).isEqualTo(this.bean.toString());
@@ -88,19 +75,13 @@ public class BeanTest {
 		Verify.that(this.bean.toString()).isEqualTo(this.createBean().toString());
 	}
 
-	@Test
-	void testBeanToString_againstClone()
-	{
-		Verify.that(this.bean.toString()).isEqualTo(this.bean.clone().toString());
-	}
-
 	@SuppressWarnings({"unused", "serial"})
-	private static class TestBean extends Bean<TestBean>
+	private static class TestBean extends Bean
 	{
 		private final int foo;
 		private int bar;
 		public int[] baz;
-		public Bean<?> nullValue = null;
+		public Bean nullValue = null;
 
 		public TestBean(int foo, int bar, int[] baz)
 		{

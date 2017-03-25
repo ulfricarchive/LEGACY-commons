@@ -2,9 +2,7 @@ package com.ulfric.commons.artifact;
 
 import com.ulfric.commons.bean.Bean;
 
-public final class Version extends Bean<Version> implements Comparable<Version> {
-
-	private static final long serialVersionUID = 1L;
+public final class Version extends Bean implements Comparable<Version> {
 
 	public static final Version ZERO = Version.builder().build();
 
