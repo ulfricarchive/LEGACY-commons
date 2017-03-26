@@ -6,9 +6,7 @@ import org.apache.commons.lang3.Validate;
 
 import com.ulfric.commons.bean.Bean;
 
-public final class Artifact extends Bean<Artifact> implements Comparable<Artifact> {
-
-	private static final long serialVersionUID = 1L;
+public final class Artifact extends Bean implements Comparable<Artifact> {
 
 	public static Builder builder()
 	{
