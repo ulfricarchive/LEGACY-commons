@@ -1,9 +1,7 @@
 package com.ulfric.commons.exception;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -58,7 +56,7 @@ class TryTest extends UtilTestBase {
 
 		Future<String> future = new SimpleFuture<String>() {
 			@Override
-			public String get() throws InterruptedException, ExecutionException
+			public String get()
 			{
 				run[0] = true;
 				return "hello";
@@ -75,7 +73,7 @@ class TryTest extends UtilTestBase {
 	{
 		Future<String> thrw = new SimpleFuture<String>() {
 			@Override
-			public String get() throws InterruptedException, ExecutionException
+			public String get()
 			{
 				throw new RuntimeException();
 			}
@@ -135,7 +133,7 @@ class TryTest extends UtilTestBase {
 		}
 
 		@Override
-		public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException
+		public T get(long timeout, TimeUnit unit)
 		{
 			throw new IllegalStateException();
 		}
