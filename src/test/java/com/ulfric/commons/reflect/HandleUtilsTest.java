@@ -139,7 +139,7 @@ class HandleUtilsTest extends UtilTestBase {
 		method.setAccessible(true);
 
 		MethodHandle handle = converter.apply(method);
-		Try.to(invoke, handle);
+		Try.to(() -> invoke.accept(handle));
 
 		Verify.that(this.methodRan).isTrue();
 	}

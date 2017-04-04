@@ -6,6 +6,18 @@ public enum Try {
 
 	;
 
+	public static void to(CheckedRunnable runnable)
+	{
+		try
+		{
+			runnable.run();
+		}
+		catch (Throwable throwable)
+		{
+			throw ThrowableUtils.getPropogated(throwable);
+		}
+	}
+
 	public static <T> T to(Future<T> future)
 	{
 		try
@@ -30,23 +42,11 @@ public enum Try {
 		}
 	}
 
-	public static <T> void to(CheckedConsumer<T> consumer, T value)
-	{
-		try
-		{
-			consumer.accept(value);
-		}
-		catch (Throwable throwable)
-		{
-			throw ThrowableUtils.getPropogated(throwable);
-		}
-	}
-
 	public static <T, R> R to(CheckedFunction<T, R> function, CheckedSupplier<T> supplier)
 	{
 		try
 		{
-			return function.get(supplier.get());
+			return function.apply(supplier.get());
 		}
 		catch (Throwable throwable)
 		{
@@ -54,15 +54,21 @@ public enum Try {
 		}
 	}
 
-	public static void to(CheckedRunnable runnable)
+	public static <T extends AutoCloseable, R> R toWithResources(CheckedSupplier<T> resources,
+			CheckedFunction<T, R> tryTo)
 	{
+		T resource = Try.to(resources::get);
 		try
 		{
-			runnable.run();
+			return tryTo.apply(resource);
 		}
 		catch (Throwable throwable)
 		{
 			throw ThrowableUtils.getPropogated(throwable);
+		}
+		finally
+		{
+			Try.to(resource::close);
 		}
 	}
 
