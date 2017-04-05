@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import com.ulfric.commons.collect.SetUtils;
+import org.apache.commons.collections4.SetUtils;
 
 public enum AnnotationUtils {
 
