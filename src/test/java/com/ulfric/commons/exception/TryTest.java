@@ -101,22 +101,49 @@ class TryTest extends UtilTestBase {
 	}
 
 	@Test
-	void test_tryConsumer_runsConsumer() throws Throwable
+	void test_tryWithResourcesFunction_runsFunctionAndClosesResources()
 	{
-		CheckedConsumer<?> consumer = Mockito.mock(CheckedConsumer.class);
-		Try.to(consumer, null);
-		Mockito.verify(consumer, Mockito.atLeastOnce()).accept(Mockito.any());
+		AutoCloseable mock = Mockito.mock(AutoCloseable.class);
+		CheckedSupplier<AutoCloseable> supplier = () -> mock;
+		CheckedFunction<AutoCloseable, Boolean> function = x -> true;
+
+		Verify.that(Try.toWithResources(supplier, function)).isTrue();
+		Try.to(Mockito.verify(mock, Mockito.times(1))::close);
 	}
 
 	@Test
-	void test_tryConsumer_rethrowsExceptions()
+	void test_tryWithResourcesFunction_rethrowsExceptions()
 	{
-		CheckedConsumer<?> consumer = ignore ->
+		AutoCloseable mock = Mockito.mock(AutoCloseable.class);
+		CheckedSupplier<AutoCloseable> supplier = () -> mock;
+		CheckedFunction<AutoCloseable, Boolean> function = x ->
 		{
 			throw new RuntimeException();
 		};
 
-		Verify.that(() -> Try.to(consumer, null)).doesThrow(RuntimeException.class);
+		Verify.that(() -> Try.toWithResources(supplier, function)).doesThrow(RuntimeException.class);
+		Try.to(Mockito.verify(mock, Mockito.times(1))::close);
+	}
+
+	@Test
+	void test_tryWithResourcesFunction_rethrowsExceptionsWhenCausedBySupplier()
+	{
+		CheckedSupplier<AutoCloseable> supplier = () ->
+		{
+			throw new RuntimeException();
+		};
+
+		Verify.that(() -> Try.toWithResources(supplier, ignore -> null)).doesThrow(RuntimeException.class);
+	}
+
+	@Test
+	void test_tryWithResourcesFunction_rethrowsExceptionsWhenCausedByClose()
+	{
+		AutoCloseable mock = Mockito.mock(AutoCloseable.class);
+		Try.to(Mockito.doThrow(RuntimeException.class).when(mock)::close);
+		CheckedSupplier<AutoCloseable> supplier = () -> mock;
+
+		Verify.that(() -> Try.toWithResources(supplier, ignore -> null)).doesThrow(RuntimeException.class);
 	}
 
 	private abstract class SimpleFuture<T> implements Future<T>
