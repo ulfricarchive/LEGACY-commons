@@ -1,4 +1,4 @@
-package com.ulfric.commons.io;
+package com.ulfric.commons.identity;
 
 import java.util.UUID;
 
