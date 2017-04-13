@@ -23,6 +23,11 @@ public final class Identity {
 		this.identity = identity;
 	}
 
+	public Object getObject()
+	{
+		return this.identity;
+	}
+
 	@Override
 	public boolean equals(Object that)
 	{
@@ -51,4 +56,5 @@ public final class Identity {
 	{
 		return this.identity.toString();
 	}
+
 }

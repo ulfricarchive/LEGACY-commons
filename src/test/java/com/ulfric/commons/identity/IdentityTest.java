@@ -46,6 +46,14 @@ public class IdentityTest {
 	}
 
 	@Test
+	void testGetObject()
+	{
+		Object dummy = new Object();
+		Identity identity = Identity.of(dummy);
+		Verify.that(identity.getObject()).isEqualTo(dummy);
+	}
+
+	@Test
 	void testHashCode()
 	{
 		Object dummy = new Object();
