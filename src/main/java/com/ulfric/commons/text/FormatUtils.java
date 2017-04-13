@@ -6,6 +6,11 @@ public enum FormatUtils {
 
 	;
 
+	public static String formatDouble(double value)
+	{
+		return NumberFormat.getNumberInstance().format(value);
+	}
+
 	public static String formatLong(long value)
 	{
 		return NumberFormat.getNumberInstance().format(value);

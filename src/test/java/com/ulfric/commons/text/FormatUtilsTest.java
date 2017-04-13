@@ -43,6 +43,18 @@ class FormatUtilsTest extends UtilTestBase {
 	}
 
 	@Test
+	void testFormatDouble20_0()
+	{
+		Verify.that(FormatUtils.formatDouble(20.0)).isEqualTo("20");
+	}
+
+	@Test
+	void testFormatDouble20D()
+	{
+		Verify.that(FormatUtils.formatDouble(20D)).isEqualTo("20");
+	}
+
+	@Test
 	void testFormatMilliseconds1000()
 	{
 		Verify.that(FormatUtils.formatMilliseconds(1000)).isEqualTo("1,000ms");
