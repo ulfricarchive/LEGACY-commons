@@ -1,6 +1,7 @@
 package com.ulfric.commons.reflect;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -43,6 +44,18 @@ class AnnotationUtilsTest extends UtilTestBase {
 	}
 
 	@Test
+	void testGetLeafAnnotationsRepeatedArray()
+	{
+		Verify.that(AnnotationUtils.getLeafAnnotations(RepeatedEx.class, Leaf.class)).isNotEmpty();
+	}
+
+	@Test
+	void testGetLeafAnnotationsRepeatedValue()
+	{
+		Verify.that(AnnotationUtils.getLeafAnnotations(RepeatedEx.class, Leaves.class)).isNotEmpty();
+	}
+
+	@Test
 	void testGetRootAnnotationsWithHolderNull()
 	{
 		Verify.that(() -> AnnotationUtils.getRootAnnotation(null, Util.class)).doesThrow(NullPointerException.class);
@@ -79,12 +92,19 @@ class AnnotationUtilsTest extends UtilTestBase {
 		
 	}
 
+	@RepeatedExample
+	private class RepeatedEx
+	{
+
+	}
+
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.ANNOTATION_TYPE)
 	private @interface TinyLeaf { }
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.ANNOTATION_TYPE)
+	@Repeatable(Leaves.class)
 	@TinyLeaf
 	private @interface Leaf { }
 
@@ -92,5 +112,18 @@ class AnnotationUtilsTest extends UtilTestBase {
 	@Target(ElementType.TYPE)
 	@Leaf
 	private @interface Example { }
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	@Leaf
+	@Leaf
+	private @interface RepeatedExample { }
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.ANNOTATION_TYPE)
+	private @interface Leaves
+	{
+		Leaf[] value();
+	}
 
 }

@@ -90,7 +90,7 @@ public enum AnnotationUtils {
 					continue;
 				}
 
-				if (annotationType.isAnnotationPresent(seed))
+				if (annotationType.getAnnotationsByType(seed).length > 0)
 				{
 					this.results.add(annotation);
 					continue;
