@@ -57,7 +57,7 @@ public enum Try {
 	public static <T extends AutoCloseable, R> R toWithResources(CheckedSupplier<T> resources,
 			CheckedFunction<T, R> tryTo)
 	{
-		T resource = Try.to(resources::get);
+		T resource = Try.to(resources);
 		try
 		{
 			return tryTo.apply(resource);
