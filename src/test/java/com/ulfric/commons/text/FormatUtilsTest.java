@@ -71,5 +71,29 @@ class FormatUtilsTest extends UtilTestBase {
 	{
 		Verify.that(FormatUtils.formatMilliseconds(-57)).isEqualTo("57ms");
 	}
+	
+	@Test
+	void testFormatRemainingPositive()
+	{
+		Verify.that(FormatUtils.formatRemaining(630000L)).isEqualTo("10m 30s");
+	}
+	
+	@Test
+	void testFormatRemainingHours()
+	{
+		Verify.that(FormatUtils.formatRemaining(3960000L)).isEqualTo("1h 6m 0s");
+	}
+	
+	@Test
+	void testFormatRemainingDays()
+	{
+		Verify.that(FormatUtils.formatRemaining(86700000L)).isEqualTo("1d 0h 5m 0s");
+	}
+	
+	@Test
+	void testFormatRemainingEmpty()
+	{
+		Verify.that(FormatUtils.formatRemaining(-1L)).isEqualTo("0m 0s");
+	}
 
 }
